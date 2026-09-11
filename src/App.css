@@ -950,6 +950,16 @@
   border-top: 1px solid #292929;
   color: #666;
   font-size: 11px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.footer-bottom span:last-child {
+  color: #888;
+  font-size: 10px;
+  letter-spacing: 0.5px;
 }
 
 /* ============================= */

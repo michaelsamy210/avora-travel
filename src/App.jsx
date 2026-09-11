@@ -1,4 +1,3 @@
-
 import "./App.css";
 import "./Trips.css";
 import { useEffect, useState } from "react";
@@ -161,13 +160,13 @@ function App() {
       <header className="site-navbar">
 
         <Link
-          to="/"
-          className="site-logo"
-          onClick={closeMobileMenu}
-        >
-          <span>SWAY</span>
-          <small>TRAVEL</small>
-        </Link>
+  to="/"
+  className="site-logo"
+  onClick={closeMobileMenu}
+>
+  <span>SWAY</span>
+  <small>TRAVEL</small>
+      </Link>
 
         <nav className="site-nav-links">
 
@@ -801,8 +800,9 @@ function App() {
         </div>
 
         <div className="footer-bottom">
-          {t.rights}
-        </div>
+           <span>{t.rights}</span>
+           <span>{t.designedBy}</span>       
+         </div>
 
       </footer>
 

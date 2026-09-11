@@ -380,10 +380,12 @@ const translations = {
       "Contact us on WhatsApp",
 
     // Footer
-    footerText:
-      "Your journey. Your story. Your SWAY.",
-    rights:
-      "© 2026 SWAY Travel. All rights reserved.",
+      footerText:
+        "Your journey. Your story. Your SWAY.",
+         rights:
+       "© 2026 SWAY Travel. All rights reserved.",
+          designedBy:
+         "Designed & Developed by Michael Samy",
   },
 
   ru: {
@@ -576,10 +578,12 @@ const translations = {
       "Связаться с нами в WhatsApp",
 
     // Footer
-    footerText:
-      "Ваше путешествие. Ваша история. Ваш SWAY.",
-    rights:
-      "© 2026 SWAY Travel. Все права защищены.",
+     footerText:
+       "Ваше путешествие. Ваша история. Ваш SWAY.",
+         rights:
+       "© 2026 SWAY Travel. Все права защищены.",
+         designedBy:
+         "Разработано Майклом Сами",
   },
 };
 
