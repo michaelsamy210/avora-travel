@@ -1,7 +1,6 @@
-```jsx
+
 import "./App.css";
 import "./Trips.css";
-import TripCard from "./TripCard";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "./supabaseClient";
@@ -83,8 +82,6 @@ function SocialIcon({ type }) {
 
 function App() {
   const [trips, setTrips] = useState([]);
-  const [selectedDestination, setSelectedDestination] =
-    useState(null);
 
   const {
     language,
@@ -112,12 +109,6 @@ function App() {
 
     getTrips();
   }, []);
-
-  const filteredTrips = selectedDestination
-    ? trips.filter(
-        (trip) => trip.destination === selectedDestination
-      )
-    : trips;
 
   const destinations = [
     ...new Set(
@@ -820,4 +811,4 @@ function App() {
 }
 
 export default App;
-```
+

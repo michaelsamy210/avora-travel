@@ -1,4 +1,3 @@
-```jsx
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "./LanguageContext.jsx";
 import "./TripCard.css";
@@ -19,21 +18,17 @@ function TripCard({
 
   return (
     <article className="trip-card">
-
       <img
         src={image}
-        alt={name}
+        alt={translatedDestination || name}
       />
 
       <div className="trip-card-content">
-
         <span className="trip-card-destination">
           {translatedDestination}
         </span>
 
-        <h3>
-          {name}
-        </h3>
+        <h3>{name}</h3>
 
         <p className="trip-card-duration">
           {duration || t.durationNotSpecified}
@@ -49,12 +44,9 @@ function TripCard({
         >
           {t.viewDetails}
         </button>
-
       </div>
-
     </article>
   );
 }
 
 export default TripCard;
-```

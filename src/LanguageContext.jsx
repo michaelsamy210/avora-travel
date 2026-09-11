@@ -185,7 +185,7 @@ const translations = {
 
     callUs: "CALL US",
     whatsapp: "WHATSAPP",
-    email: "EMAIL",
+    emailLabel: "EMAIL",
     office: "OUR OFFICE",
     officeLocation: "Cairo, Egypt",
     followUs: "FOLLOW US",
@@ -321,7 +321,7 @@ const translations = {
 
     callUs: "ПОЗВОНИТЕ НАМ",
     whatsapp: "WHATSAPP",
-    email: "ЭЛЕКТРОННАЯ ПОЧТА",
+    emailLabel: "ЭЛЕКТРОННАЯ ПОЧТА",
     office: "НАШ ОФИС",
     officeLocation: "Каир, Египет",
     followUs: "ПОДПИСЫВАЙТЕСЬ НА НАС",
@@ -376,7 +376,7 @@ export function LanguageProvider({ children }) {
   );
 }
 
-
+// eslint-disable-next-line react-refresh/only-export-components
 export function useLanguage() {
   return useContext(LanguageContext);
 }
