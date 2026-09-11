@@ -7,7 +7,12 @@ import "./TripDetails.css";
 function TripDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { t } = useLanguage();
+
+  const {
+    t,
+    destinations: destinationTranslations,
+    translateDynamic,
+  } = useLanguage();
 
   const [trip, setTrip] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -28,6 +33,11 @@ function TripDetails() {
         setLoading(false);
         return;
       }
+
+      console.log(
+        "TRIP DATA FROM SUPABASE:",
+        data
+      );
 
       setTrip(data);
       setSelectedImage(data.image || "");
@@ -65,6 +75,11 @@ function TripDetails() {
     ? [trip.image]
     : [];
 
+  const translatedDestination =
+    destinationTranslations[
+      trip.destination?.trim().toUpperCase()
+    ] || trip.destination;
+
   return (
     <div className="trip-details-page">
       <Link to="/" className="back-link">
@@ -80,7 +95,7 @@ function TripDetails() {
             {selectedImage && (
               <img
                 src={selectedImage}
-                alt={trip.name}
+                alt={translateDynamic(trip.name)}
               />
             )}
           </div>
@@ -96,11 +111,15 @@ function TripDetails() {
                       : "trip-thumbnail"
                   }
                   key={`${image}-${index}`}
-                  onClick={() => setSelectedImage(image)}
+                  onClick={() =>
+                    setSelectedImage(image)
+                  }
                 >
                   <img
                     src={image}
-                    alt={`${trip.name} ${index + 1}`}
+                    alt={`${translateDynamic(
+                      trip.name
+                    )} ${index + 1}`}
                   />
                 </button>
               ))}
@@ -112,13 +131,17 @@ function TripDetails() {
 
         <section className="trip-info">
           <span className="trip-info-destination">
-            {trip.destination}
+            {translatedDestination}
           </span>
 
-          <h1>{trip.name}</h1>
+          <h1>
+            {translateDynamic(trip.name)}
+          </h1>
 
           <p className="trip-description">
-            {trip.description || t.noDescription}
+            {trip.description
+              ? translateDynamic(trip.description)
+              : t.noDescription}
           </p>
 
           <div className="trip-info-grid">
@@ -127,7 +150,9 @@ function TripDetails() {
               <span>{t.hotel}</span>
 
               <strong>
-                {trip.hotel || t.notSpecified}
+                {trip.hotel
+                  ? translateDynamic(trip.hotel)
+                  : t.notSpecified}
               </strong>
             </div>
 
@@ -135,7 +160,9 @@ function TripDetails() {
               <span>{t.duration}</span>
 
               <strong>
-                {trip.duration || t.notSpecified}
+                {trip.duration
+                  ? translateDynamic(trip.duration)
+                  : t.notSpecified}
               </strong>
             </div>
 
@@ -183,7 +210,9 @@ function TripDetails() {
 
                 <ul>
                   {trip.meals.map((item, index) => (
-                    <li key={index}>{item}</li>
+                    <li key={index}>
+                      {translateDynamic(item)}
+                    </li>
                   ))}
                 </ul>
               </div>
@@ -197,7 +226,9 @@ function TripDetails() {
 
                 <ul>
                   {trip.activities.map((item, index) => (
-                    <li key={index}>{item}</li>
+                    <li key={index}>
+                      {translateDynamic(item)}
+                    </li>
                   ))}
                 </ul>
               </div>
@@ -211,7 +242,9 @@ function TripDetails() {
 
                 <ul>
                   {trip.transportation.map((item, index) => (
-                    <li key={index}>{item}</li>
+                    <li key={index}>
+                      {translateDynamic(item)}
+                    </li>
                   ))}
                 </ul>
               </div>
@@ -225,7 +258,9 @@ function TripDetails() {
 
                 <ul>
                   {trip.included.map((item, index) => (
-                    <li key={index}>✓ {item}</li>
+                    <li key={index}>
+                      ✓ {translateDynamic(item)}
+                    </li>
                   ))}
                 </ul>
               </div>
@@ -239,7 +274,9 @@ function TripDetails() {
 
                 <ul>
                   {trip.not_included.map((item, index) => (
-                    <li key={index}>✕ {item}</li>
+                    <li key={index}>
+                      ✕ {translateDynamic(item)}
+                    </li>
                   ))}
                 </ul>
               </div>

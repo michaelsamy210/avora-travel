@@ -1,3 +1,4 @@
+```jsx
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "./LanguageContext.jsx";
 import "./TripCard.css";
@@ -11,7 +12,10 @@ function TripCard({
   price,
 }) {
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t, destinations } = useLanguage();
+
+  const translatedDestination =
+    destinations[destination?.trim().toUpperCase()] || destination;
 
   return (
     <article className="trip-card">
@@ -24,7 +28,7 @@ function TripCard({
       <div className="trip-card-content">
 
         <span className="trip-card-destination">
-          {destination}
+          {translatedDestination}
         </span>
 
         <h3>
@@ -53,3 +57,4 @@ function TripCard({
 }
 
 export default TripCard;
+```
