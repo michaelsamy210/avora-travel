@@ -2,6 +2,76 @@ import { createContext, useContext, useState } from "react";
 
 const LanguageContext = createContext();
 
+const destinationTranslations = {
+  en: {
+    HURGHADA: "HURGHADA",
+    "SHARM EL SHEIKH": "SHARM EL SHEIKH",
+  },
+
+  ru: {
+    HURGHADA: "Хургада",
+    "SHARM EL SHEIKH": "Шарм-эль-Шейх",
+  },
+};
+
+
+/* ================= DYNAMIC TRIP TRANSLATIONS ================= */
+
+const dynamicTranslations = {
+  en: {
+    "DOLPHIN HOUSE": "DOLPHIN HOUSE",
+
+    "Yacht Trip": "Yacht Trip",
+    "Snorkeling": "Snorkeling",
+
+    "7-8 HOURS": "7-8 HOURS",
+  },
+
+  ru: {
+    "DOLPHIN HOUSE": "ДОМ ДЕЛЬФИНОВ",
+
+    "Yacht Trip": "Прогулка на яхте",
+    "Snorkeling": "Снорклинг",
+
+    "7-8 HOURS": "7–8 часов",
+  },
+};
+
+
+function translateDynamic(value, language) {
+  if (!value) {
+    return value;
+  }
+
+  const translationsForLanguage =
+    dynamicTranslations[language];
+
+  if (!translationsForLanguage) {
+    return value;
+  }
+
+  if (typeof value !== "string") {
+    return value;
+  }
+
+  const normalizedValue = value
+    .trim()
+    .toLowerCase();
+
+  const translationKey =
+    Object.keys(translationsForLanguage).find(
+      (key) =>
+        key.trim().toLowerCase() === normalizedValue
+    );
+
+  if (translationKey) {
+    return translationsForLanguage[translationKey];
+  }
+
+  return value;
+}
+
+
 const translations = {
   en: {
     // Navbar
@@ -12,75 +82,69 @@ const translations = {
     navContact: "Contact",
     login: "Admin Login",
 
-
     // Trips Page
-tripsBackHome: "← Back to Home",
-tripsEyebrow: "DISCOVER YOUR NEXT ADVENTURE",
-tripsTitle: "Our Trips",
-tripsDescription:
-  "Choose your next adventure from our carefully selected trips and unforgettable destinations.",
-tripsSearchPlaceholder: "Search trips or destinations...",
-allTrips: "All Trips",
-trip: "Trip",
-trips: "Trips",
-found: "Found",
-noTripsFound: "No trips found.",
+    tripsBackHome: "← Back to Home",
+    tripsEyebrow: "DISCOVER YOUR NEXT ADVENTURE",
+    tripsTitle: "Our Trips",
+    tripsDescription:
+      "Choose your next adventure from our carefully selected trips and unforgettable destinations.",
+    tripsSearchPlaceholder:
+      "Search trips or destinations...",
+    allTrips: "All Trips",
+    trip: "Trip",
+    trips: "Trips",
+    found: "Found",
+    noTripsFound: "No trips found.",
 
-// Trip Card
-viewDetails: "View Details",
-durationNotSpecified: "Duration not specified",
-priceNotSpecified: "Price not specified",
+    // Trip Card
+    viewDetails: "View Details",
+    durationNotSpecified: "Duration not specified",
+    priceNotSpecified: "Price not specified",
 
-// Trip Details
-backToTrips: "← Back to Trips",
-loadingTrip: "Loading trip...",
-tripNotFound: "Trip not found",
-unableToLoadTrip: "Unable to load this trip.",
-backToHome: "Back to Home",
-noDescription: "No description available.",
-hotel: "Hotel",
-duration: "Duration",
-price: "Price",
-availableSeats: "Available Seats",
-startDate: "Start Date",
-endDate: "End Date",
-notSpecified: "Not specified",
-meals: "Meals",
-activities: "Activities",
-transportation: "Transportation",
-whatsIncluded: "What's Included",
-whatsNotIncluded: "What's Not Included",
-bookNow: "Book Now",
+    // Trip Details
+    backToTrips: "← Back to Trips",
+    loadingTrip: "Loading trip...",
+    tripNotFound: "Trip not found",
+    unableToLoadTrip: "Unable to load this trip.",
+    backToHome: "Back to Home",
+    noDescription: "No description available.",
+    hotel: "Hotel",
+    duration: "Duration",
+    price: "Price",
+    availableSeats: "Available Seats",
+    startDate: "Start Date",
+    endDate: "End Date",
+    notSpecified: "Not specified",
+    meals: "Meals",
+    activities: "Activities",
+    transportation: "Transportation",
+    whatsIncluded: "What's Included",
+    whatsNotIncluded: "What's Not Included",
+    bookNow: "Book Now",
 
-
-// Booking
-unableToLoadTrip: "Unable to load this trip.",
-tripNotFound: "Trip Not Found",
-backToHome: "Back to Home",
-bookingReceived: "Booking Received",
-thankYou: "Thank you,",
-bookingRequestFor: "Your booking request for",
-bookingSubmitted: "has been submitted successfully.",
-teamWillContact:
-  "Our team will contact you soon to confirm the details of your trip.",
-backToTrip: "Back to Trip",
-hotel: "HOTEL",
-availableSeats: "AVAILABLE SEATS",
-bookYourTrip: "BOOK YOUR TRIP",
-completeBooking: "Complete Your Booking",
-bookingDescription:
-  "Enter your information and our team will contact you to confirm your reservation.",
-fullName: "Full Name",
-enterFullName: "Enter your full name",
-phoneNumber: "Phone Number",
-email: "Email",
-numberOfSeats: "Number of Seats",
-travelDate: "Travel Date",
-notes: "Notes",
-additionalNotes:
-  "Any additional notes or requests...",
-submittingBooking: "Submitting Booking...",
-submitBooking: "Submit Booking",
+    // Booking
+    bookingReceived: "Booking Received",
+    thankYou: "Thank you,",
+    bookingRequestFor: "Your booking request for",
+    bookingSubmitted: "has been submitted successfully.",
+    teamWillContact:
+      "Our team will contact you soon to confirm the details of your trip.",
+    backToTrip: "Back to Trip",
+    bookYourTrip: "BOOK YOUR TRIP",
+    completeBooking: "Complete Your Booking",
+    bookingDescription:
+      "Enter your information and our team will contact you to confirm your reservation.",
+    fullName: "Full Name",
+    enterFullName: "Enter your full name",
+    phoneNumber: "Phone Number",
+    email: "Email",
+    numberOfSeats: "Number of Seats",
+    travelDate: "Travel Date",
+    notes: "Notes",
+    additionalNotes:
+      "Any additional notes or requests...",
+    submittingBooking: "Submitting Booking...",
+    submitBooking: "Submit Booking",
 
     // Hero
     heroEyebrow: "DISCOVER • EXPLORE • EXPERIENCE",
@@ -148,76 +212,76 @@ submitBooking: "Submit Booking",
     login: "Вход администратора",
 
     // Trips Page
-tripsBackHome: "← На главную",
-tripsEyebrow: "ОТКРОЙТЕ СВОЁ СЛЕДУЮЩЕЕ ПРИКЛЮЧЕНИЕ",
-tripsTitle: "Наши туры",
-tripsDescription:
-  "Выберите своё следующее приключение среди тщательно подобранных туров и незабываемых направлений.",
-tripsSearchPlaceholder: "Поиск туров или направлений...",
-allTrips: "Все туры",
-trip: "Тур",
-trips: "Туры",
-found: "Найдено",
-noTripsFound: "Туры не найдены.",
+    tripsBackHome: "← На главную",
+    tripsEyebrow:
+      "ОТКРОЙТЕ СВОЁ СЛЕДУЮЩЕЕ ПРИКЛЮЧЕНИЕ",
+    tripsTitle: "Наши туры",
+    tripsDescription:
+      "Выберите своё следующее приключение среди тщательно подобранных туров и незабываемых направлений.",
+    tripsSearchPlaceholder:
+      "Поиск туров или направлений...",
+    allTrips: "Все туры",
+    trip: "Тур",
+    trips: "Туры",
+    found: "Найдено",
+    noTripsFound: "Туры не найдены.",
 
-// Trip Card
-viewDetails: "Подробнее",
-durationNotSpecified: "Продолжительность не указана",
-priceNotSpecified: "Цена не указана",
+    // Trip Card
+    viewDetails: "Подробнее",
+    durationNotSpecified:
+      "Продолжительность не указана",
+    priceNotSpecified: "Цена не указана",
 
-// Trip Details
-backToTrips: "← Назад к турам",
-loadingTrip: "Загрузка тура...",
-tripNotFound: "Тур не найден",
-unableToLoadTrip: "Не удалось загрузить этот тур.",
-backToHome: "На главную",
-noDescription: "Описание отсутствует.",
-hotel: "Отель",
-duration: "Продолжительность",
-price: "Цена",
-availableSeats: "Свободные места",
-startDate: "Дата начала",
-endDate: "Дата окончания",
-notSpecified: "Не указано",
-meals: "Питание",
-activities: "Активности",
-transportation: "Транспорт",
-whatsIncluded: "Что включено",
-whatsNotIncluded: "Что не включено",
-bookNow: "Забронировать",
+    // Trip Details
+    backToTrips: "← Назад к турам",
+    loadingTrip: "Загрузка тура...",
+    tripNotFound: "Тур не найден",
+    unableToLoadTrip:
+      "Не удалось загрузить этот тур.",
+    backToHome: "На главную",
+    noDescription: "Описание отсутствует.",
+    hotel: "Отель",
+    duration: "Продолжительность",
+    price: "Цена",
+    availableSeats: "Свободные места",
+    startDate: "Дата начала",
+    endDate: "Дата окончания",
+    notSpecified: "Не указано",
+    meals: "Питание",
+    activities: "Активности",
+    transportation: "Транспорт",
+    whatsIncluded: "Что включено",
+    whatsNotIncluded: "Что не включено",
+    bookNow: "Забронировать",
 
-
-// Booking
-unableToLoadTrip: "Не удалось загрузить этот тур.",
-tripNotFound: "Тур не найден",
-backToHome: "На главную",
-bookingReceived: "Бронирование получено",
-thankYou: "Спасибо,",
-bookingRequestFor: "Ваш запрос на бронирование тура",
-bookingSubmitted: "был успешно отправлен.",
-teamWillContact:
-  "Наша команда свяжется с вами в ближайшее время для подтверждения деталей поездки.",
-backToTrip: "Назад к туру",
-hotel: "ОТЕЛЬ",
-availableSeats: "СВОБОДНЫЕ МЕСТА",
-bookYourTrip: "ЗАБРОНИРОВАТЬ ТУР",
-completeBooking: "Завершите бронирование",
-bookingDescription:
-  "Введите свои данные, и наша команда свяжется с вами для подтверждения бронирования.",
-fullName: "Полное имя",
-enterFullName: "Введите ваше полное имя",
-phoneNumber: "Номер телефона",
-email: "Электронная почта",
-numberOfSeats: "Количество мест",
-travelDate: "Дата поездки",
-notes: "Примечания",
-additionalNotes:
-  "Дополнительные заметки или пожелания...",
-submittingBooking: "Отправка бронирования...",
-submitBooking: "Отправить бронирование",
+    // Booking
+    bookingReceived: "Бронирование получено",
+    thankYou: "Спасибо,",
+    bookingRequestFor:
+      "Ваш запрос на бронирование тура",
+    bookingSubmitted: "был успешно отправлен.",
+    teamWillContact:
+      "Наша команда свяжется с вами в ближайшее время для подтверждения деталей поездки.",
+    backToTrip: "Назад к туру",
+    bookYourTrip: "ЗАБРОНИРОВАТЬ ТУР",
+    completeBooking: "Завершите бронирование",
+    bookingDescription:
+      "Введите свои данные, и наша команда свяжется с вами для подтверждения бронирования.",
+    fullName: "Полное имя",
+    enterFullName: "Введите ваше полное имя",
+    phoneNumber: "Номер телефона",
+    email: "Электронная почта",
+    numberOfSeats: "Количество мест",
+    travelDate: "Дата поездки",
+    notes: "Примечания",
+    additionalNotes:
+      "Дополнительные заметки или пожелания...",
+    submittingBooking: "Отправка бронирования...",
+    submitBooking: "Отправить бронирование",
 
     // Hero
-    heroEyebrow: "ОТКРОЙ • ИССЛЕДУЙ • ПУТЕШЕСТВУЙ",
+    heroEyebrow:
+      "ОТКРОЙ • ИССЛЕДУЙ • ПУТЕШЕСТВУЙ",
     heroTitle: "Ваше путешествие начинается здесь",
     heroText:
       "Откройте для себя незабываемые направления, лучшие туры и уникальные впечатления.",
@@ -241,7 +305,8 @@ submitBooking: "Отправить бронирование",
     aboutButton: "Смотреть наши туры",
 
     // Contact CTA
-    contactEyebrow: "НАЧНИТЕ СВОЁ ПУТЕШЕСТВИЕ",
+    contactEyebrow:
+      "НАЧНИТЕ СВОЁ ПУТЕШЕСТВИЕ",
     contactTitle: "Готовы к новому приключению?",
     contactText:
       "Выберите идеальное направление и начните планировать своё следующее незабываемое путешествие с SWAY Travel.",
@@ -249,7 +314,8 @@ submitBooking: "Отправить бронирование",
 
     // Contact Info
     contactInfoEyebrow: "СВЯЖИТЕСЬ С НАМИ",
-    contactInfoTitle: "Свяжитесь с SWAY Travel",
+    contactInfoTitle:
+      "Свяжитесь с SWAY Travel",
     contactInfoText:
       "Есть вопросы или готовы спланировать следующую поездку? Мы готовы помочь.",
 
@@ -263,7 +329,8 @@ submitBooking: "Отправить бронирование",
     // Accessibility
     travelAlt: "Путешествия",
     toggleMenu: "Открыть меню навигации",
-    contactWhatsApp: "Связаться с нами в WhatsApp",
+    contactWhatsApp:
+      "Связаться с нами в WhatsApp",
 
     // Footer
     footerText:
@@ -273,17 +340,25 @@ submitBooking: "Отправить бронирование",
   },
 };
 
+
 export function LanguageProvider({ children }) {
   const [language, setLanguage] = useState(() => {
-    return localStorage.getItem("sway-language") || "en";
+    return (
+      localStorage.getItem("sway-language") || "en"
+    );
   });
 
   function changeLanguage(newLanguage) {
     setLanguage(newLanguage);
-    localStorage.setItem("sway-language", newLanguage);
+    localStorage.setItem(
+      "sway-language",
+      newLanguage
+    );
   }
 
   const t = translations[language];
+  const destinations =
+    destinationTranslations[language];
 
   return (
     <LanguageContext.Provider
@@ -291,12 +366,16 @@ export function LanguageProvider({ children }) {
         language,
         setLanguage: changeLanguage,
         t,
+        destinations,
+        translateDynamic: (value) =>
+          translateDynamic(value, language),
       }}
     >
       {children}
     </LanguageContext.Provider>
   );
 }
+
 
 export function useLanguage() {
   return useContext(LanguageContext);

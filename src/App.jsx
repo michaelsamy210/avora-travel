@@ -1,3 +1,4 @@
+```jsx
 import "./App.css";
 import "./Trips.css";
 import TripCard from "./TripCard";
@@ -85,7 +86,12 @@ function App() {
   const [selectedDestination, setSelectedDestination] =
     useState(null);
 
-  const { language, setLanguage, t } = useLanguage();
+  const {
+    language,
+    setLanguage,
+    t,
+    destinations: destinationTranslations,
+  } = useLanguage();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -114,8 +120,20 @@ function App() {
     : trips;
 
   const destinations = [
-    ...new Set(trips.map((trip) => trip.destination)),
+    ...new Set(
+      trips
+        .map((trip) => trip.destination)
+        .filter(Boolean)
+    ),
   ];
+
+  function getTranslatedDestination(destination) {
+    return (
+      destinationTranslations[
+        destination?.trim().toUpperCase()
+      ] || destination
+    );
+  }
 
   function closeMobileMenu() {
     setMobileMenuOpen(false);
@@ -411,6 +429,9 @@ function App() {
               return null;
             }
 
+            const translatedDestination =
+              getTranslatedDestination(destination);
+
             return (
               <div
                 className="destination-card"
@@ -421,13 +442,13 @@ function App() {
 
                   <img
                     src={trip.image}
-                    alt={destination}
+                    alt={translatedDestination}
                   />
 
                   <div className="destination-overlay">
 
                     <span>
-                      {destination}
+                      {translatedDestination}
                     </span>
 
                   </div>
@@ -437,7 +458,7 @@ function App() {
                 <div className="destination-content">
 
                   <h3>
-                    {destination}
+                    {translatedDestination}
                   </h3>
 
                   <p>
@@ -799,3 +820,4 @@ function App() {
 }
 
 export default App;
+```
