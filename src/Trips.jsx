@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { supabase } from "./supabaseClient";
@@ -10,7 +11,8 @@ function Trips() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { t } = useLanguage();
+  const { t, destinations: destinationTranslations } =
+    useLanguage();
 
   const selectedDestination =
     searchParams.get("destination") || "All";
@@ -68,6 +70,16 @@ function Trips() {
     });
   }
 
+  function getTranslatedDestination(destination) {
+    if (!destination) {
+      return destination;
+    }
+
+    const key = destination.trim().toUpperCase();
+
+    return destinationTranslations[key] || destination;
+  }
+
   return (
     <div className="trips-page">
       {/* ================= HEADER ================= */}
@@ -86,17 +98,11 @@ function Trips() {
       {/* ================= HERO ================= */}
 
       <section className="trips-page-hero">
-        <span>
-          {t.tripsEyebrow}
-        </span>
+        <span>{t.tripsEyebrow}</span>
 
-        <h1>
-          {t.tripsTitle}
-        </h1>
+        <h1>{t.tripsTitle}</h1>
 
-        <p>
-          {t.tripsDescription}
-        </p>
+        <p>{t.tripsDescription}</p>
       </section>
 
       {/* ================= CONTENT ================= */}
@@ -145,7 +151,7 @@ function Trips() {
                 handleDestinationChange(destination)
               }
             >
-              {destination}
+              {getTranslatedDestination(destination)}
             </button>
           ))}
         </div>

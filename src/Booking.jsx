@@ -6,13 +6,27 @@ import "./Booking.css";
 
 function Booking() {
   const { id } = useParams();
-  const { t } = useLanguage();
+
+  const {
+    t,
+    language,
+    destinations,
+    translateText,
+  } = useLanguage();
 
   const [trip, setTrip] = useState(null);
+  const [translatedTrip, setTranslatedTrip] =
+    useState(null);
+
   const [loading, setLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [bookingSuccess, setBookingSuccess] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] =
+    useState("");
+
+  const [bookingSuccess, setBookingSuccess] =
+    useState(false);
+
+  const [submitting, setSubmitting] =
+    useState(false);
 
   const [formData, setFormData] = useState({
     customer_name: "",
@@ -23,8 +37,13 @@ function Booking() {
     notes: "",
   });
 
+  // ================= FETCH TRIP =================
+
   useEffect(() => {
     async function getTrip() {
+      setLoading(true);
+      setErrorMessage("");
+
       const { data, error } = await supabase
         .from("trips")
         .select("*")
@@ -32,8 +51,15 @@ function Booking() {
         .single();
 
       if (error) {
-        console.error("Error fetching trip:", error);
-        setErrorMessage(t.unableToLoadTrip);
+        console.error(
+          "Error fetching trip:",
+          error
+        );
+
+        setErrorMessage(
+          t.unableToLoadTrip
+        );
+
         setLoading(false);
         return;
       }
@@ -45,6 +71,69 @@ function Booking() {
     getTrip();
   }, [id, t.unableToLoadTrip]);
 
+  // ================= TRANSLATE TRIP =================
+
+  useEffect(() => {
+    async function translateBookingTrip() {
+      if (!trip) {
+        return;
+      }
+
+      if (language === "en") {
+        setTranslatedTrip(trip);
+        return;
+      }
+
+      try {
+        const [
+          translatedName,
+          translatedDuration,
+          translatedHotel,
+        ] = await Promise.all([
+          trip.name
+            ? translateText(trip.name)
+            : trip.name,
+
+          trip.duration
+            ? translateText(trip.duration)
+            : trip.duration,
+
+          trip.hotel
+            ? translateText(trip.hotel)
+            : trip.hotel,
+        ]);
+
+        setTranslatedTrip({
+          ...trip,
+          name:
+            translatedName || trip.name,
+
+          duration:
+            translatedDuration ||
+            trip.duration,
+
+          hotel:
+            translatedHotel || trip.hotel,
+        });
+      } catch (error) {
+        console.error(
+          "Error translating booking trip:",
+          error
+        );
+
+        setTranslatedTrip(trip);
+      }
+    }
+
+    translateBookingTrip();
+  }, [
+    trip,
+    language,
+    translateText,
+  ]);
+
+  // ================= FORM =================
+
   function handleChange(event) {
     const { name, value } = event.target;
 
@@ -53,6 +142,8 @@ function Booking() {
       [name]: value,
     }));
   }
+
+  // ================= SUBMIT BOOKING =================
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -69,20 +160,29 @@ function Booking() {
       .insert([
         {
           trip_id: trip.id,
-          customer_name: formData.customer_name,
+          customer_name:
+            formData.customer_name,
           phone: formData.phone,
-          email: formData.email || null,
+          email:
+            formData.email || null,
           seats: Number(formData.seats),
-          travel_date: formData.travel_date || null,
-          notes: formData.notes || null,
+          travel_date:
+            formData.travel_date || null,
+          notes:
+            formData.notes || null,
         },
       ]);
 
     if (error) {
-      console.error("Booking error:", error);
+      console.error(
+        "Booking error:",
+        error
+      );
 
       setErrorMessage(
-        "We couldn't submit your booking. Please try again."
+        language === "ru"
+          ? "Не удалось отправить бронирование. Пожалуйста, попробуйте еще раз."
+          : "We couldn't submit your booking. Please try again."
       );
 
       setSubmitting(false);
@@ -92,6 +192,8 @@ function Booking() {
     setSubmitting(false);
     setBookingSuccess(true);
   }
+
+  // ================= LOADING =================
 
   if (loading) {
     return (
@@ -105,17 +207,24 @@ function Booking() {
     );
   }
 
+  // ================= ERROR =================
+
   if (errorMessage && !trip) {
     return (
       <div className="booking-page">
         <div className="booking-error">
-          <div className="booking-error-icon">!</div>
+          <div className="booking-error-icon">
+            !
+          </div>
 
           <h2>{t.tripNotFound}</h2>
 
           <p>{errorMessage}</p>
 
-          <Link to="/" className="booking-home-button">
+          <Link
+            to="/"
+            className="booking-home-button"
+          >
             {t.backToHome}
           </Link>
         </div>
@@ -123,26 +232,50 @@ function Booking() {
     );
   }
 
+  // ================= DISPLAY TRIP =================
+
+  const displayTrip =
+    translatedTrip || trip;
+
+  const translatedDestination =
+    destinations[
+      displayTrip.destination
+        ?.trim()
+        .toUpperCase()
+    ] ||
+    displayTrip.destination;
+
+  // ================= SUCCESS =================
+
   if (bookingSuccess) {
     return (
       <div className="booking-page">
         <div className="booking-success">
-          <div className="success-icon">✓</div>
+          <div className="success-icon">
+            ✓
+          </div>
 
           <span className="booking-success-eyebrow">
             SWAY TRAVEL
           </span>
 
-          <h1>{t.bookingReceived}</h1>
+          <h1>
+            {t.bookingReceived}
+          </h1>
 
           <p>
             {t.thankYou}{" "}
-            <strong>{formData.customer_name}</strong>.
+            <strong>
+              {formData.customer_name}
+            </strong>
+            .
           </p>
 
           <p>
             {t.bookingRequestFor}{" "}
-            <strong>{trip.name}</strong>{" "}
+            <strong>
+              {displayTrip.name}
+            </strong>{" "}
             {t.bookingSubmitted}
           </p>
 
@@ -170,10 +303,11 @@ function Booking() {
     );
   }
 
+  // ================= PAGE =================
+
   return (
     <div className="booking-page">
       <div className="booking-wrapper">
-
         <Link
           to={`/trip/${trip.id}`}
           className="booking-back-link"
@@ -183,12 +317,13 @@ function Booking() {
 
         <div className="booking-layout">
 
-          <div className="booking-trip-card">
+          {/* ================= TRIP CARD ================= */}
 
-            {trip.image ? (
+          <div className="booking-trip-card">
+            {displayTrip.image ? (
               <img
-                src={trip.image}
-                alt={trip.name}
+                src={displayTrip.image}
+                alt={displayTrip.name}
                 className="booking-trip-image"
               />
             ) : (
@@ -198,43 +333,61 @@ function Booking() {
             )}
 
             <div className="booking-trip-content">
-
               <span className="booking-trip-destination">
-                {trip.destination}
+                {translatedDestination}
               </span>
 
-              <h2>{trip.name}</h2>
+              <h2>
+                {displayTrip.name}
+              </h2>
 
               <div className="booking-trip-meta">
-                <span>◷ {trip.duration}</span>
-                <span>◆ {trip.price}</span>
+                <span>
+                  ◷ {displayTrip.duration}
+                </span>
+
+                <span>
+                  ◆ {displayTrip.price}
+                </span>
               </div>
 
-              {trip.hotel && (
+              {displayTrip.hotel && (
                 <div className="booking-trip-detail">
-                  <small>{t.hotel}</small>
+                  <small>
+                    {t.hotel}
+                  </small>
 
-                  <strong>{trip.hotel}</strong>
+                  <strong>
+                    {displayTrip.hotel}
+                  </strong>
                 </div>
               )}
 
-              {trip.seats && (
+              {displayTrip.seats && (
                 <div className="booking-trip-detail">
-                  <small>{t.availableSeats}</small>
+                  <small>
+                    {t.availableSeats}
+                  </small>
 
-                  <strong>{trip.seats}</strong>
+                  <strong>
+                    {displayTrip.seats}
+                  </strong>
                 </div>
               )}
-
             </div>
           </div>
 
+          {/* ================= BOOKING FORM ================= */}
+
           <div className="booking-form-card">
-
             <div className="booking-form-header">
-              <span>{t.bookYourTrip}</span>
+              <span>
+                {t.bookYourTrip}
+              </span>
 
-              <h1>{t.completeBooking}</h1>
+              <h1>
+                {t.completeBooking}
+              </h1>
 
               <p>
                 {t.bookingDescription}
@@ -248,24 +401,35 @@ function Booking() {
             )}
 
             <form onSubmit={handleSubmit}>
-
               <div className="booking-form-grid">
 
+                {/* FULL NAME */}
+
                 <div className="booking-form-group full">
-                  <label>{t.fullName}</label>
+                  <label>
+                    {t.fullName}
+                  </label>
 
                   <input
                     type="text"
                     name="customer_name"
-                    value={formData.customer_name}
+                    value={
+                      formData.customer_name
+                    }
                     onChange={handleChange}
-                    placeholder={t.enterFullName}
+                    placeholder={
+                      t.enterFullName
+                    }
                     required
                   />
                 </div>
 
+                {/* PHONE */}
+
                 <div className="booking-form-group">
-                  <label>{t.phoneNumber}</label>
+                  <label>
+                    {t.phoneNumber}
+                  </label>
 
                   <input
                     type="tel"
@@ -277,8 +441,12 @@ function Booking() {
                   />
                 </div>
 
+                {/* EMAIL */}
+
                 <div className="booking-form-group">
-                  <label>{t.email}</label>
+                  <label>
+                    {t.email}
+                  </label>
 
                   <input
                     type="email"
@@ -289,8 +457,12 @@ function Booking() {
                   />
                 </div>
 
+                {/* SEATS */}
+
                 <div className="booking-form-group">
-                  <label>{t.numberOfSeats}</label>
+                  <label>
+                    {t.numberOfSeats}
+                  </label>
 
                   <input
                     type="number"
@@ -298,30 +470,45 @@ function Booking() {
                     value={formData.seats}
                     onChange={handleChange}
                     min="1"
-                    max={trip.seats || undefined}
+                    max={
+                      trip.seats ||
+                      undefined
+                    }
                     required
                   />
                 </div>
 
+                {/* TRAVEL DATE */}
+
                 <div className="booking-form-group">
-                  <label>{t.travelDate}</label>
+                  <label>
+                    {t.travelDate}
+                  </label>
 
                   <input
                     type="date"
                     name="travel_date"
-                    value={formData.travel_date}
+                    value={
+                      formData.travel_date
+                    }
                     onChange={handleChange}
                   />
                 </div>
 
+                {/* NOTES */}
+
                 <div className="booking-form-group full">
-                  <label>{t.notes}</label>
+                  <label>
+                    {t.notes}
+                  </label>
 
                   <textarea
                     name="notes"
                     value={formData.notes}
                     onChange={handleChange}
-                    placeholder={t.additionalNotes}
+                    placeholder={
+                      t.additionalNotes
+                    }
                     rows="5"
                   />
                 </div>
@@ -337,9 +524,7 @@ function Booking() {
                   ? t.submittingBooking
                   : t.submitBooking}
               </button>
-
             </form>
-
           </div>
         </div>
       </div>

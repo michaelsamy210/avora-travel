@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "./LanguageContext.jsx";
 import "./TripCard.css";
@@ -11,16 +12,80 @@ function TripCard({
   price,
 }) {
   const navigate = useNavigate();
-  const { t, destinations } = useLanguage();
+
+  const {
+    t,
+    language,
+    destinations,
+    translateText,
+  } = useLanguage();
+
+  const [translatedName, setTranslatedName] =
+    useState(name);
+
+  const [translatedDuration, setTranslatedDuration] =
+    useState(duration);
 
   const translatedDestination =
-    destinations[destination?.trim().toUpperCase()] || destination;
+    destinations[
+      destination?.trim().toUpperCase()
+    ] || destination;
+
+  useEffect(() => {
+    console.log("TRIP CARD TRANSLATION STARTED:", {
+      name,
+      duration,
+      language,
+    });
+
+    async function translateTripCard() {
+      if (language === "en") {
+        setTranslatedName(name);
+        setTranslatedDuration(duration);
+        return;
+      }
+
+      try {
+        const [nameTranslation, durationTranslation] =
+          await Promise.all([
+            translateText(name),
+            translateText(duration),
+          ]);
+
+        setTranslatedName(
+          nameTranslation || name
+        );
+
+        setTranslatedDuration(
+          durationTranslation || duration
+        );
+      } catch (error) {
+        console.error(
+          "Error translating trip card:",
+          error
+        );
+
+        setTranslatedName(name);
+        setTranslatedDuration(duration);
+      }
+    }
+
+    translateTripCard();
+  }, [
+    name,
+    duration,
+    language,
+    translateText,
+  ]);
 
   return (
     <article className="trip-card">
       <img
         src={image}
-        alt={translatedDestination || name}
+        alt={
+          translatedDestination ||
+          translatedName
+        }
       />
 
       <div className="trip-card-content">
@@ -28,10 +93,11 @@ function TripCard({
           {translatedDestination}
         </span>
 
-        <h3>{name}</h3>
+        <h3>{translatedName}</h3>
 
         <p className="trip-card-duration">
-          {duration || t.durationNotSpecified}
+          {translatedDuration ||
+            t.durationNotSpecified}
         </p>
 
         <p className="trip-card-price">
