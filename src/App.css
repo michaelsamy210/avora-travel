@@ -1389,3 +1389,11 @@
     padding: 25px;
   }
 }
+.special-offers-card .destination-image img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
