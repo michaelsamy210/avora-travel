@@ -68,6 +68,7 @@ function TripDetails() {
       );
 
       setTrip(data);
+
       setSelectedImage(
         data.image || ""
       );
@@ -163,10 +164,9 @@ function TripDetails() {
               trip.duration
             ),
 
-          meals:
-            await translateArray(
-              trip.meals
-            ),
+          meals: await translateArray(
+            trip.meals
+          ),
 
           activities:
             await translateArray(
@@ -343,6 +343,14 @@ function TripDetails() {
             {translatedDestination}
           </span>
 
+          {/* ================= SPECIAL OFFER ================= */}
+
+          {displayTrip.is_offer && (
+            <span className="trip-details-offer-badge">
+              SPECIAL OFFER
+            </span>
+          )}
+
           <h1>
             {displayTrip.name}
           </h1>
@@ -397,10 +405,26 @@ function TripDetails() {
                 {t.price}
               </span>
 
-              <strong>
-                {displayTrip.price ||
-                  t.notSpecified}
-              </strong>
+              {displayTrip.is_offer &&
+              displayTrip.old_price ? (
+                <div className="trip-details-prices">
+
+                  <span className="trip-details-old-price">
+                    {displayTrip.old_price}
+                  </span>
+
+                  <strong className="trip-details-offer-price">
+                    {displayTrip.price ||
+                      t.notSpecified}
+                  </strong>
+
+                </div>
+              ) : (
+                <strong>
+                  {displayTrip.price ||
+                    t.notSpecified}
+                </strong>
+              )}
 
             </div>
 

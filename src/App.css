@@ -1327,3 +1327,65 @@
     animation: none !important;
   }
 }
+  
+
+/* ============================= */
+/* SPECIAL OFFERS CARD */
+/* ============================= */
+
+.special-offers-card {
+  grid-column: 1 / -1;
+  width: 100%;
+  height: 180px;
+  display: grid;
+  grid-template-columns: 40% 60%;
+}
+
+.special-offers-card .destination-image {
+  height: 180px;
+}
+
+.special-offers-card .destination-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 25px 35px;
+}
+
+.special-offers-card .destination-content h3 {
+  margin-bottom: 8px;
+}
+
+.special-offers-card .destination-content p {
+  margin-bottom: 15px;
+}
+
+/* ============================= */
+/* DESKTOP DESTINATION CARDS */
+/* ============================= */
+
+@media (min-width: 851px) {
+  .destinations-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ============================= */
+/* MOBILE */
+/* ============================= */
+
+@media (max-width: 850px) {
+  .special-offers-card {
+    grid-column: 1 / -1;
+    height: auto;
+    display: block;
+  }
+
+  .special-offers-card .destination-image {
+    height: 180px;
+  }
+
+  .special-offers-card .destination-content {
+    padding: 25px;
+  }
+}

@@ -1,3 +1,4 @@
+
 import "./App.css";
 import "./Trips.css";
 import { useEffect, useState } from "react";
@@ -81,49 +82,112 @@ function SocialIcon({ type }) {
 
 function App() {
   const [trips, setTrips] = useState([]);
+  const [sections, setSections] = useState([]);
+
+  const [
+    specialOffersSettings,
+    setSpecialOffersSettings,
+  ] = useState({
+    image: "",
+    title_en: "SPECIAL OFFERS",
+    title_ru: "СПЕЦИАЛЬНЫЕ ПРЕДЛОЖЕНИЯ",
+    description_en:
+      "Discover our best deals and enjoy unforgettable trips at special prices.",
+    description_ru:
+      "Откройте для себя лучшие предложения и наслаждайтесь незабываемыми путешествиями по специальным ценам.",
+    active: true,
+  });
 
   const {
     language,
     setLanguage,
     t,
-    destinations: destinationTranslations,
   } = useLanguage();
 
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] =
+    useState(false);
 
   useEffect(() => {
-    async function getTrips() {
-      const { data, error } = await supabase
-        .from("trips")
-        .select("*")
-        .order("id", { ascending: true });
+    async function getHomeData() {
+      const [
+        tripsResult,
+        sectionsResult,
+        specialOffersResult,
+      ] = await Promise.all([
+        supabase
+          .from("trips")
+          .select("*")
+          .order("id", {
+            ascending: true,
+          }),
 
-      if (error) {
-        console.error("Error fetching trips:", error);
-        return;
+        supabase
+          .from("trip_sections")
+          .select("*")
+          .eq("active", true)
+          .order("sort_order", {
+            ascending: true,
+          })
+          .order("id", {
+            ascending: true,
+          }),
+
+        supabase
+          .from("special_offers_settings")
+          .select("*")
+          .limit(1)
+          .maybeSingle(),
+      ]);
+
+      if (tripsResult.error) {
+        console.error(
+          "Error fetching trips:",
+          tripsResult.error
+        );
+      } else {
+        setTrips(tripsResult.data || []);
       }
 
-      setTrips(data || []);
+      if (sectionsResult.error) {
+        console.error(
+          "Error fetching trip sections:",
+          sectionsResult.error
+        );
+      } else {
+        setSections(sectionsResult.data || []);
+      }
+
+      if (specialOffersResult.error) {
+        console.error(
+          "Error fetching Special Offers settings:",
+          specialOffersResult.error
+        );
+      } else if (specialOffersResult.data) {
+        setSpecialOffersSettings({
+          image:
+            specialOffersResult.data.image ||
+            "",
+          title_en:
+            specialOffersResult.data.title_en ||
+            "SPECIAL OFFERS",
+          title_ru:
+            specialOffersResult.data.title_ru ||
+            "СПЕЦИАЛЬНЫЕ ПРЕДЛОЖЕНИЯ",
+          description_en:
+            specialOffersResult.data
+              .description_en || "",
+          description_ru:
+            specialOffersResult.data
+              .description_ru || "",
+          active:
+            specialOffersResult.data.active ??
+            true,
+        });
+      }
     }
 
-    getTrips();
+    getHomeData();
   }, []);
-
-  const destinations = [
-    ...new Set(
-      trips
-        .map((trip) => trip.destination)
-        .filter(Boolean)
-    ),
-  ];
-
-  function getTranslatedDestination(destination) {
-    return (
-      destinationTranslations[
-        destination?.trim().toUpperCase()
-      ] || destination
-    );
-  }
 
   function closeMobileMenu() {
     setMobileMenuOpen(false);
@@ -152,6 +216,16 @@ function App() {
     },
   ];
 
+  const specialOffersTitle =
+    language === "ru"
+      ? specialOffersSettings.title_ru
+      : specialOffersSettings.title_en;
+
+  const specialOffersDescription =
+    language === "ru"
+      ? specialOffersSettings.description_ru
+      : specialOffersSettings.description_en;
+
   return (
     <div className="site">
 
@@ -160,13 +234,13 @@ function App() {
       <header className="site-navbar">
 
         <Link
-  to="/"
-  className="site-logo"
-  onClick={closeMobileMenu}
->
-  <span>SWAY</span>
-  <small>TRAVEL</small>
-      </Link>
+          to="/"
+          className="site-logo"
+          onClick={closeMobileMenu}
+        >
+          <span>SWAY</span>
+          <small>TRAVEL</small>
+        </Link>
 
         <nav className="site-nav-links">
 
@@ -203,7 +277,9 @@ function App() {
                   ? "language-button active"
                   : "language-button"
               }
-              onClick={() => setLanguage("en")}
+              onClick={() =>
+                setLanguage("en")
+              }
             >
               EN
             </button>
@@ -217,7 +293,9 @@ function App() {
                   ? "language-button active"
                   : "language-button"
               }
-              onClick={() => setLanguage("ru")}
+              onClick={() =>
+                setLanguage("ru")
+              }
             >
               RU
             </button>
@@ -239,7 +317,9 @@ function App() {
                 : "mobile-menu-button"
             }
             onClick={() =>
-              setMobileMenuOpen((current) => !current)
+              setMobileMenuOpen(
+                (current) => !current
+              )
             }
             aria-label={t.toggleMenu}
             aria-expanded={mobileMenuOpen}
@@ -383,7 +463,7 @@ function App() {
       </section>
 
 
-      {/* ================= DESTINATIONS ================= */}
+      {/* ================= DESTINATIONS / TRIP SECTIONS ================= */}
 
       <section
         className="destinations"
@@ -408,37 +488,51 @@ function App() {
 
         <div className="destinations-container">
 
-          {destinations.map((destination) => {
+          {sections.map((section) => {
 
-            const trip = trips.find(
-              (item) =>
-                item.destination === destination
+            const sectionTrips = trips.filter(
+              (trip) =>
+                Number(trip.section_id) ===
+                Number(section.id)
             );
 
-            if (!trip) {
+            if (sectionTrips.length === 0) {
               return null;
             }
 
-            const translatedDestination =
-              getTranslatedDestination(destination);
+            const firstTrip =
+              sectionTrips[0];
+
+            const sectionName =
+              language === "ru"
+                ? section.name_ru
+                : section.name_en;
 
             return (
               <div
                 className="destination-card"
-                key={destination}
+                key={section.id}
               >
 
                 <div className="destination-image">
 
-                  <img
-                    src={trip.image}
-                    alt={translatedDestination}
-                  />
+                  {firstTrip.image ? (
+                    <img
+                      src={firstTrip.image}
+                      alt={sectionName}
+                    />
+                  ) : (
+                    <div className="image-placeholder">
+                      <span>
+                        {sectionName}
+                      </span>
+                    </div>
+                  )}
 
                   <div className="destination-overlay">
 
                     <span>
-                      {translatedDestination}
+                      {sectionName}
                     </span>
 
                   </div>
@@ -448,7 +542,7 @@ function App() {
                 <div className="destination-content">
 
                   <h3>
-                    {translatedDestination}
+                    {sectionName}
                   </h3>
 
                   <p>
@@ -456,12 +550,18 @@ function App() {
                   </p>
 
                   <Link
-                    to="/trips"
+                    to={
+                      "/trips?section=" +
+                      encodeURIComponent(
+                        section.id
+                      )
+                    }
                     className="destination-explore-button"
                   >
                     {t.explore}
 
                     <span>→</span>
+
                   </Link>
 
                 </div>
@@ -469,6 +569,70 @@ function App() {
               </div>
             );
           })}
+
+
+          {/* ================= SPECIAL OFFERS ================= */}
+
+          {specialOffersSettings.active && (
+            <div className="destination-card special-offers-card">
+
+              <div className="destination-image">
+
+                {specialOffersSettings.image ? (
+                  <img
+                    src={
+                      specialOffersSettings.image
+                    }
+                    alt={
+                      specialOffersTitle
+                    }
+                  />
+                ) : (
+                  <div className="image-placeholder">
+                    <span>
+                      {specialOffersTitle}
+                    </span>
+                  </div>
+                )}
+
+                <div className="destination-overlay">
+
+                  <span>
+                    {specialOffersTitle}
+                  </span>
+
+                </div>
+
+              </div>
+
+              <div className="destination-content">
+
+                <h3>
+                  {specialOffersTitle}
+                </h3>
+
+                <p>
+                  {
+                    specialOffersDescription
+                  }
+                </p>
+
+                <Link
+                  to="/trips?offers=true"
+                  className="destination-explore-button"
+                >
+                  {language === "ru"
+                    ? "Смотреть предложения"
+                    : "Explore Offers"}
+
+                  <span>→</span>
+
+                </Link>
+
+              </div>
+
+            </div>
+          )}
 
         </div>
 
@@ -688,24 +852,34 @@ function App() {
 
           <div className="social-links">
 
-            {socialLinks.map((social) => (
-              <a
-                key={social.type}
-                href={social.url}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={`Follow SWAY Travel on ${social.name}`}
-                className={`social-link social-${social.type}`}
-              >
+            {socialLinks.map(
+              (social) => (
+                <a
+                  key={social.type}
+                  href={social.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={
+                    "Follow SWAY Travel on " +
+                    social.name
+                  }
+                  className={
+                    "social-link social-" +
+                    social.type
+                  }
+                >
 
-                <SocialIcon type={social.type} />
+                  <SocialIcon
+                    type={social.type}
+                  />
 
-                <span>
-                  {social.name}
-                </span>
+                  <span>
+                    {social.name}
+                  </span>
 
-              </a>
-            ))}
+                </a>
+              )
+            )}
 
           </div>
 
@@ -718,20 +892,30 @@ function App() {
 
       <div className="floating-social-bar">
 
-        {socialLinks.map((social) => (
-          <a
-            key={social.type}
-            href={social.url}
-            target="_blank"
-            rel="noreferrer"
-            aria-label={`SWAY Travel ${social.name}`}
-            className={`floating-social-link floating-${social.type}`}
-          >
+        {socialLinks.map(
+          (social) => (
+            <a
+              key={social.type}
+              href={social.url}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={
+                "SWAY Travel " +
+                social.name
+              }
+              className={
+                "floating-social-link floating-" +
+                social.type
+              }
+            >
 
-            <SocialIcon type={social.type} />
+              <SocialIcon
+                type={social.type}
+              />
 
-          </a>
-        ))}
+            </a>
+          )
+        )}
 
       </div>
 
@@ -800,9 +984,16 @@ function App() {
         </div>
 
         <div className="footer-bottom">
-           <span>{t.rights}</span>
-           <span>{t.designedBy}</span>       
-         </div>
+
+          <span>
+            {t.rights}
+          </span>
+
+          <span>
+            {t.designedBy}
+          </span>
+
+        </div>
 
       </footer>
 
@@ -811,4 +1002,3 @@ function App() {
 }
 
 export default App;
-

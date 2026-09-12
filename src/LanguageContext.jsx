@@ -15,11 +15,13 @@ const destinationTranslations = {
   en: {
     HURGHADA: "HURGHADA",
     "SHARM EL SHEIKH": "SHARM EL SHEIKH",
+    DAHAB: "DAHAB",
   },
 
   ru: {
     HURGHADA: "Хургада",
     "SHARM EL SHEIKH": "Шарм-эль-Шейх",
+    DAHAB: "Дахаб",
   },
 };
 
@@ -28,8 +30,9 @@ const destinationTranslations = {
 const dynamicTranslations = {
   en: {
     // Destinations
-    HURGHADA: "HURGHADA",
-    "SHARM EL SHEIKH": "SHARM EL SHEIKH",
+HURGHADA: "HURGHADA",
+"SHARM EL SHEIKH": "SHARM EL SHEIKH",
+DAHAB: "DAHAB",
 
     // Trip names
     "DOLPHIN HOUSE": "DOLPHIN HOUSE",
@@ -71,9 +74,10 @@ const dynamicTranslations = {
   },
 
   ru: {
-    // Destinations
-    HURGHADA: "Хургада",
-    "SHARM EL SHEIKH": "Шарм-эль-Шейх",
+   // Destinations
+HURGHADA: "Хургада",
+"SHARM EL SHEIKH": "Шарм-эль-Шейх",
+DAHAB: "Дахаб",
 
     // Trip names
     "DOLPHIN HOUSE": "ДОМ ДЕЛЬФИНОВ",

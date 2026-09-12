@@ -224,4 +224,284 @@
     min-height: 48px;
     margin-top: 19px;
   }
+}/* ============================= */
+/* TRIP CARD */
+/* ============================= */
+
+.trip-card {
+  width: 100%;
+  max-width: 390px;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e7e7e4;
+  border-radius: 20px;
+  text-align: left;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.045);
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.trip-card:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    0 20px 45px rgba(0, 0, 0, 0.09);
+}
+
+/* ============================= */
+/* IMAGE */
+/* ============================= */
+
+.trip-card-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 275px;
+  overflow: hidden;
+}
+
+.trip-card-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.7s ease;
+}
+
+.trip-card:hover .trip-card-image-wrapper img {
+  transform: scale(1.04);
+}
+
+/* ============================= */
+/* SPECIAL OFFER BADGE */
+/* ============================= */
+
+.trip-card-offer-badge {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  z-index: 2;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 9px 13px;
+
+  border-radius: 999px;
+
+  background: #171717;
+  color: #ffffff;
+
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+/* ============================= */
+/* CONTENT */
+/* ============================= */
+
+.trip-card-content {
+  padding: 26px 26px 25px;
+}
+
+/* ============================= */
+/* DESTINATION */
+/* ============================= */
+
+.trip-card-destination {
+  display: block;
+  margin-bottom: 10px;
+  color: #9a9a96;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2.2px;
+  text-transform: uppercase;
+}
+
+/* ============================= */
+/* TITLE */
+/* ============================= */
+
+.trip-card-content h3 {
+  margin: 0 0 20px;
+  color: #171717;
+  font-size: 25px;
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.6px;
+}
+
+/* ============================= */
+/* TRIP META */
+/* ============================= */
+
+.trip-card-duration {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  margin: 0;
+  padding-right: 14px;
+
+  color: #555555;
+  font-size: 12px;
+  line-height: 1.4;
+
+  border-right: 1px solid #ddddda;
+}
+
+/* ============================= */
+/* PRICES */
+/* ============================= */
+
+.trip-card-prices {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 38px;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+.trip-card-price {
+  display: inline-flex;
+  align-items: center;
+
+  margin: 0;
+
+  color: #171717;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.trip-card-old-price {
+  display: inline-flex;
+  align-items: center;
+
+  color: #9a9a96;
+  font-size: 12px;
+  font-weight: 500;
+
+  text-decoration: line-through;
+}
+
+.trip-card-price.offer-price {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+/* ============================= */
+/* BUTTON */
+/* ============================= */
+
+.trip-card-content button {
+  width: 100%;
+  min-height: 50px;
+  margin-top: 22px;
+  padding: 0 22px !important;
+
+  border: 1px solid #171717;
+  border-radius: 30px;
+
+  background: #171717 !important;
+  color: #ffffff !important;
+
+  font-size: 12px !important;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.trip-card-content button:hover {
+  background: #ffffff !important;
+  color: #171717 !important;
+  transform: translateY(-2px) !important;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================= */
+/* TABLET */
+/* ============================= */
+
+@media (max-width: 1050px) {
+  .trip-card {
+    max-width: 100%;
+  }
+
+  .trip-card-image-wrapper {
+    height: 270px;
+  }
+}
+
+/* ============================= */
+/* MOBILE */
+/* ============================= */
+
+@media (max-width: 650px) {
+  .trip-card {
+    max-width: 100%;
+    border-radius: 17px;
+  }
+
+  .trip-card-image-wrapper {
+    height: 245px;
+  }
+
+  .trip-card-content {
+    padding: 23px 22px 24px;
+  }
+
+  .trip-card-destination {
+    margin-bottom: 9px;
+  }
+
+  .trip-card-content h3 {
+    margin-bottom: 17px;
+    font-size: 22px;
+  }
+
+  .trip-card-duration {
+    font-size: 11px;
+  }
+
+  .trip-card-price {
+    font-size: 14px;
+  }
+
+  .trip-card-old-price {
+    font-size: 11px;
+  }
+
+  .trip-card-price.offer-price {
+    font-size: 15px;
+  }
+
+  .trip-card-prices {
+    gap: 7px;
+    margin-left: 8px;
+  }
+
+  .trip-card-offer-badge {
+    top: 14px;
+    left: 14px;
+    padding: 8px 11px;
+    font-size: 8px;
+  }
+
+  .trip-card-content button {
+    min-height: 48px;
+    margin-top: 19px;
+  }
 }

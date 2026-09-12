@@ -10,6 +10,8 @@ function TripCard({
   destination,
   duration,
   price,
+  old_price,
+  is_offer,
 }) {
   const navigate = useNavigate();
 
@@ -80,13 +82,21 @@ function TripCard({
 
   return (
     <article className="trip-card">
-      <img
-        src={image}
-        alt={
-          translatedDestination ||
-          translatedName
-        }
-      />
+      <div className="trip-card-image-wrapper">
+        <img
+          src={image}
+          alt={
+            translatedDestination ||
+            translatedName
+          }
+        />
+
+        {is_offer && (
+          <span className="trip-card-offer-badge">
+            SPECIAL OFFER
+          </span>
+        )}
+      </div>
 
       <div className="trip-card-content">
         <span className="trip-card-destination">
@@ -100,9 +110,23 @@ function TripCard({
             t.durationNotSpecified}
         </p>
 
-        <p className="trip-card-price">
-          {price || t.priceNotSpecified}
-        </p>
+        <div className="trip-card-prices">
+          {is_offer && old_price ? (
+            <span className="trip-card-old-price">
+              {old_price}
+            </span>
+          ) : null}
+
+          <span
+            className={
+              is_offer
+                ? "trip-card-price offer-price"
+                : "trip-card-price"
+            }
+          >
+            {price || t.priceNotSpecified}
+          </span>
+        </div>
 
         <button
           type="button"
