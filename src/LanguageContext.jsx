@@ -342,11 +342,11 @@ const translations = {
 
     // About
     aboutEyebrow:
-      "ABOUT SWAY",
+      "ABOUT AVORA",
     aboutTitle:
-      "Travel With SWAY",
+      "Travel With AVORA",
     aboutText:
-      "At SWAY Travel, we believe that traveling is more than visiting a place. It is about discovering new experiences, meeting new people, and creating memories that last a lifetime.",
+      "At AVORA Travel, we believe that traveling is more than visiting a place. It is about discovering new experiences, meeting new people, and creating memories that last a lifetime.",
     aboutButton:
       "Explore Our Trips",
 
@@ -356,7 +356,7 @@ const translations = {
     contactTitle:
       "Ready For Your Next Adventure?",
     contactText:
-      "Find your perfect destination and start planning your next unforgettable journey with SWAY Travel.",
+      "Find your perfect destination and start planning your next unforgettable journey with AVORA Travel.",
     contactButton:
       "View Trips",
 
@@ -364,7 +364,7 @@ const translations = {
     contactInfoEyebrow:
       "GET IN TOUCH",
     contactInfoTitle:
-      "Contact SWAY Travel",
+      "Contact AVORA Travel",
     contactInfoText:
       "Have a question or ready to plan your next trip? We are here to help.",
 
@@ -385,9 +385,9 @@ const translations = {
 
     // Footer
       footerText:
-        "Your journey. Your story. Your SWAY.",
+        "Your journey. Your story. Your AVORA.",
          rights:
-       "© 2026 SWAY Travel. All rights reserved.",
+       "© 2026 AVORA Travel. All rights reserved.",
           designedBy:
          "Designed & Developed by Michael Samy",
   },
@@ -534,11 +534,11 @@ const translations = {
 
     // About
     aboutEyebrow:
-      "О SWAY",
+      "О AVORA",
     aboutTitle:
-      "Путешествуйте с SWAY",
+      "Путешествуйте с AVORA",
     aboutText:
-      "SWAY Travel — это больше, чем просто путешествия. Мы открываем новые места, создаём уникальные впечатления и помогаем создавать воспоминания на всю жизнь.",
+      "AVORA Travel — это больше, чем просто путешествия. Мы открываем новые места, создаём уникальные впечатления и помогаем создавать воспоминания на всю жизнь.",
     aboutButton:
       "Смотреть наши туры",
 
@@ -548,7 +548,7 @@ const translations = {
     contactTitle:
       "Готовы к новому приключению?",
     contactText:
-      "Выберите идеальное направление и начните планировать своё следующее незабываемое путешествие с SWAY Travel.",
+      "Выберите идеальное направление и начните планировать своё следующее незабываемое путешествие с AVORA Travel.",
     contactButton:
       "Смотреть туры",
 
@@ -556,7 +556,7 @@ const translations = {
     contactInfoEyebrow:
       "СВЯЖИТЕСЬ С НАМИ",
     contactInfoTitle:
-      "Свяжитесь с SWAY Travel",
+      "Свяжитесь с AVORA Travel",
     contactInfoText:
       "Есть вопросы или готовы спланировать следующую поездку? Мы готовы помочь.",
 
@@ -583,9 +583,9 @@ const translations = {
 
     // Footer
      footerText:
-       "Ваше путешествие. Ваша история. Ваш SWAY.",
+       "Ваше путешествие. Ваша история. Ваш AVORA.",
          rights:
-       "© 2026 SWAY Travel. Все права защищены.",
+       "© 2026 AVORA Travel. Все права защищены.",
          designedBy:
          "Разработано Майклом Сами",
   },
@@ -600,7 +600,7 @@ export function LanguageProvider({
     useState(() => {
       return (
         localStorage.getItem(
-          "sway-language"
+          "avora-language"
         ) || "en"
       );
     });
@@ -611,7 +611,7 @@ export function LanguageProvider({
     setLanguage(newLanguage);
 
     localStorage.setItem(
-      "sway-language",
+      "avora-language",
       newLanguage
     );
   }

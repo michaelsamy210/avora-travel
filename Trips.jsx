@@ -31,7 +31,7 @@ function Trips() {
       <header className="trips-page-header">
 
         <Link to="/" className="trips-page-logo">
-          <span>SWAY</span>
+          <span>AVORA</span>
           <small>TRAVEL</small>
         </Link>
 

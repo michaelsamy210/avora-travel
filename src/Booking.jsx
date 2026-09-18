@@ -256,7 +256,7 @@ function Booking() {
           </div>
 
           <span className="booking-success-eyebrow">
-            SWAY TRAVEL
+            AVORA TRAVEL
           </span>
 
           <h1>
@@ -328,7 +328,7 @@ function Booking() {
               />
             ) : (
               <div className="booking-trip-image-placeholder">
-                SWAY TRAVEL
+                AVORA TRAVEL
               </div>
             )}
 

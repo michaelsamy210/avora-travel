@@ -61,7 +61,7 @@ function AdminLogin() {
       <div className="admin-login-card">
 
         <div className="admin-login-logo">
-          <strong>SWAY</strong>
+          <strong>AVORA</strong>
           <span>TRAVEL</span>
         </div>
 

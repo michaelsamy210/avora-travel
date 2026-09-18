@@ -1782,7 +1782,7 @@ function Admin() {
         <div className="admin-logo">
 
           <div className="admin-logo-main">
-            SWAY
+            AVORA
           </div>
 
           <div className="admin-logo-sub">
@@ -1832,7 +1832,7 @@ function Admin() {
         <div className="sidebar-footer">
 
           <span>
-            SWAY Travel
+            AVORA Travel
           </span>
 
           <small>

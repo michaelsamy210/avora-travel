@@ -145,7 +145,7 @@ function Trips() {
           to="/"
           className="trips-page-logo"
         >
-          <span>SWAY</span>
+          <span>AVORA</span>
           <small>TRAVEL</small>
         </Link>
 

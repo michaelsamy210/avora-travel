@@ -17,9 +17,14 @@ import Trips from "./Trips.jsx";
 
 import { LanguageProvider } from "./LanguageContext.jsx";
 
+const isGitHubPages =
+  window.location.hostname.endsWith("github.io");
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter
+      basename={isGitHubPages ? "/avora-travel" : "/"}
+    >
       <LanguageProvider>
 
         <Routes>

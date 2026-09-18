@@ -238,7 +238,7 @@ function App() {
           className="site-logo"
           onClick={closeMobileMenu}
         >
-          <span>SWAY</span>
+          <span>AVORA</span>
           <small>TRAVEL</small>
         </Link>
 
@@ -648,10 +648,10 @@ function App() {
 
         <div className="about-image">
 
-          <img
-            src="/images/hero.jpg"
-            alt={t.travelAlt}
-          />
+       <img
+         src="/avora-travel/images/hero.jpg"
+          alt={t.travelAlt}
+       />
 
         </div>
 
@@ -796,7 +796,7 @@ function App() {
 
 
           <a
-            href="mailto:info@swaytravel.com"
+            href="mailto:info@avoratravel.com"
             className="contact-info-card"
           >
 
@@ -811,7 +811,7 @@ function App() {
               </span>
 
               <strong>
-                info@swaytravel.com
+                info@avoratravel.com
               </strong>
 
             </div>
@@ -860,7 +860,7 @@ function App() {
                   target="_blank"
                   rel="noreferrer"
                   aria-label={
-                    "Follow SWAY Travel on " +
+                    "Follow AVORA Travel on " +
                     social.name
                   }
                   className={
@@ -900,7 +900,7 @@ function App() {
               target="_blank"
               rel="noreferrer"
               aria-label={
-                "SWAY Travel " +
+                "AVORA Travel " +
                 social.name
               }
               className={
@@ -946,7 +946,7 @@ function App() {
         <div className="footer-logo">
 
           <span>
-            SWAY
+            AVORA
           </span>
 
           <small>
