@@ -3423,3 +3423,62 @@
     width: 100%;
   }
 }
+
+
+/* =========================
+   PASSWORD TOGGLE
+========================= */
+
+.password-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-input-wrapper input {
+  width: 100%;
+  padding-right: 52px;
+  box-sizing: border-box;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+.password-toggle:hover {
+  color: #0891b2;
+  background: rgba(8, 145, 178, 0.08);
+}
+
+.password-toggle:focus-visible {
+  outline: 2px solid rgba(8, 145, 178, 0.35);
+  outline-offset: 2px;
+}
+
+.password-toggle svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}

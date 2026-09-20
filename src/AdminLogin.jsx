@@ -12,6 +12,7 @@ function AdminLogin() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] =
@@ -276,15 +277,43 @@ function AdminLogin() {
                   Password
                 </label>
 
-                <input
-                  id="admin-password"
-                  type="password"
-                  value={password}
-                  onChange={handlePasswordChange}
-                  placeholder="Enter your password"
-                  autoComplete="current-password"
-                  required
-                />
+                <div className="password-input-wrapper">
+                  <input
+                    id="admin-password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={handlePasswordChange}
+                    placeholder="Enter your password"
+                    autoComplete="current-password"
+                    required
+                  />
+
+                  <button
+                    type="button"
+                    className="password-toggle"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      {showPassword ? (
+                        <>
+                          <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z" />
+                          <circle cx="12" cy="12" r="2.5" />
+                        </>
+                      ) : (
+                        <>
+                          <path d="M3 3l18 18" />
+                          <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8" />
+                          <path d="M9.5 5.3A10.7 10.7 0 0 1 12 5c6.5 0 10 7 10 7a18.4 18.4 0 0 1-3.1 3.8" />
+                          <path d="M6.1 6.1C3.4 8.1 2 12 2 12s3.5 7 10 7a10.7 10.7 0 0 0 2.5-.3" />
+                        </>
+                      )}
+                    </svg>
+                  </button>
+                </div>
               </div>
 
               <button

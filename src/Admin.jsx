@@ -80,6 +80,7 @@ const [userForm, setUserForm] = useState({
   password: "",
   role: "manager",
 });
+const [showUserPassword, setShowUserPassword] = useState(false);
 
 const [userActionLoading, setUserActionLoading] =
   useState(false);
@@ -89,6 +90,8 @@ const [passwordForm, setPasswordForm] =
     password: "",
     confirmPassword: "",
   });
+  const [showNewPassword, setShowNewPassword] = useState(false);
+const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
 const [passwordLoading, setPasswordLoading] =
   useState(false);
@@ -2968,20 +2971,60 @@ if (!session || !isStaff) {
               Temporary Password
             </label>
 
-            <input
-              id="user-password"
-              type="password"
-              value={userForm.password}
-              onChange={(event) =>
-                setUserForm((previous) => ({
-                  ...previous,
-                  password:
-                    event.target.value,
-                }))
-              }
-              placeholder="Minimum 8 characters"
-              disabled={userActionLoading}
-            />
+            <div className="password-input-wrapper">
+              <input
+                id="user-password"
+                type={
+                  showUserPassword
+                    ? "text"
+                    : "password"
+                }
+                value={userForm.password}
+                onChange={(event) =>
+                  setUserForm((previous) => ({
+                    ...previous,
+                    password:
+                      event.target.value,
+                  }))
+                }
+                placeholder="Minimum 8 characters"
+                disabled={userActionLoading}
+              />
+
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() =>
+                  setShowUserPassword(
+                    (previous) => !previous
+                  )
+                }
+                aria-label={
+                  showUserPassword
+                    ? "Hide password"
+                    : "Show password"
+                }
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  {showUserPassword ? (
+                    <>
+                      <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z" />
+                      <circle cx="12" cy="12" r="2.5" />
+                    </>
+                  ) : (
+                    <>
+                      <path d="M3 3l18 18" />
+                      <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8" />
+                      <path d="M9.5 5.3A10.7 10.7 0 0 1 12 5c6.5 0 10 7 10 7a18.4 18.4 0 0 1-3.1 3.8" />
+                      <path d="M6.1 6.1C3.4 8.1 2 12 2 12s3.5 7 10 7a10.7 10.7 0 0 0 2.5-.3" />
+                    </>
+                  )}
+                </svg>
+              </button>
+            </div>
 
             <small>
               The account holder can change this password later.
@@ -3295,20 +3338,53 @@ if (!session || !isStaff) {
               New Password
             </label>
 
-            <input
-              id="new-password"
-              type="password"
-              value={passwordForm.password}
-              onChange={(event) =>
-                setPasswordForm((previous) => ({
-                  ...previous,
-                  password:
-                    event.target.value,
-                }))
-              }
-              placeholder="Minimum 8 characters"
-              disabled={passwordLoading}
-            />
+          <div className="password-input-wrapper">
+              <input
+                id="new-password"
+                type={showNewPassword ? "text" : "password"}
+                value={passwordForm.password}
+                onChange={(event) =>
+                  setPasswordForm((previous) => ({
+                    ...previous,
+                    password: event.target.value,
+                  }))
+                }
+                placeholder="Minimum 8 characters"
+                disabled={passwordLoading}
+              />
+
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() =>
+                  setShowNewPassword((previous) => !previous)
+                }
+                aria-label={
+                  showNewPassword
+                    ? "Hide password"
+                    : "Show password"
+                }
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  {showNewPassword ? (
+                    <>
+                      <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z" />
+                      <circle cx="12" cy="12" r="2.5" />
+                    </>
+                  ) : (
+                    <>
+                      <path d="M3 3l18 18" />
+                      <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8" />
+                      <path d="M9.5 5.3A10.7 10.7 0 0 1 12 5c6.5 0 10 7 10 7a18.4 18.4 0 0 1-3.1 3.8" />
+                      <path d="M6.1 6.1C3.4 8.1 2 12 2 12s3.5 7 10 7a10.7 10.7 0 0 0 2.5-.3" />
+                    </>
+                  )}
+                </svg>
+              </button>
+            </div>
           </div>
 
           <div className="account-form-group">
@@ -3316,22 +3392,62 @@ if (!session || !isStaff) {
               Confirm New Password
             </label>
 
-            <input
-              id="confirm-password"
-              type="password"
-              value={
-                passwordForm.confirmPassword
-              }
-              onChange={(event) =>
-                setPasswordForm((previous) => ({
-                  ...previous,
-                  confirmPassword:
-                    event.target.value,
-                }))
-              }
-              placeholder="Repeat your new password"
-              disabled={passwordLoading}
-            />
+           <div className="password-input-wrapper">
+              <input
+                id="confirm-password"
+                type={
+                  showConfirmPassword
+                    ? "text"
+                    : "password"
+                }
+                value={
+                  passwordForm.confirmPassword
+                }
+                onChange={(event) =>
+                  setPasswordForm((previous) => ({
+                    ...previous,
+                    confirmPassword:
+                      event.target.value,
+                  }))
+                }
+                placeholder="Repeat your new password"
+                disabled={passwordLoading}
+              />
+
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() =>
+                  setShowConfirmPassword(
+                    (previous) => !previous
+                  )
+                }
+                aria-label={
+                  showConfirmPassword
+                    ? "Hide password"
+                    : "Show password"
+                }
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  {showConfirmPassword ? (
+                    <>
+                      <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z" />
+                      <circle cx="12" cy="12" r="2.5" />
+                    </>
+                  ) : (
+                    <>
+                      <path d="M3 3l18 18" />
+                      <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8" />
+                      <path d="M9.5 5.3A10.7 10.7 0 0 1 12 5c6.5 0 10 7 10 7a18.4 18.4 0 0 1-3.1 3.8" />
+                      <path d="M6.1 6.1C3.4 8.1 2 12 2 12s3.5 7 10 7a10.7 10.7 0 0 0 2.5-.3" />
+                    </>
+                  )}
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
 
