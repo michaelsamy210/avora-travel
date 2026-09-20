@@ -1,192 +1,288 @@
-css
-/* =========================
+/* =========================================================
+   AVORA ADMIN DASHBOARD
+   ========================================================= */
+
+
+/* =========================================================
    ADMIN PAGE
-========================= */
+   ========================================================= */
 
 .admin-page {
   width: 100%;
   min-height: 100vh;
   margin: 0;
   padding: 0;
+
+  display: flex;
+
   background: #f6f8fb;
   color: #172033;
+
   font-family: Arial, sans-serif;
-  display: flex;
+
   box-sizing: border-box;
 }
 
 
-/* =========================
+/* =========================================================
    SIDEBAR
-========================= */
+   ========================================================= */
 
 .admin-sidebar {
   position: fixed;
   top: 0;
   left: 0;
+
   width: 260px;
   height: 100vh;
+
   padding: 32px 18px;
-  background: #071f33;
-  color: white;
+
   display: flex;
   flex-direction: column;
+
+  background: #071f33;
+  color: #ffffff;
+
   box-sizing: border-box;
+
   z-index: 1000;
+
   overflow-y: auto;
 }
 
 
-/* =========================
+/* =========================================================
    LOGO
-========================= */
+   ========================================================= */
 
 .admin-logo {
   flex: 0 0 auto;
+
   width: 100%;
   height: auto;
+
   margin: 0 0 35px;
   padding: 0;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
   text-align: center;
+
   box-sizing: border-box;
 }
 
 .admin-logo-main {
   display: block;
+
   width: auto;
+
   margin: 0;
   padding: 0;
+
   color: #ffffff;
+
   font-family: Arial, sans-serif;
   font-size: 30px;
   font-weight: 800;
   line-height: 36px;
+
   letter-spacing: 4px;
+
   white-space: nowrap;
 }
 
 .admin-logo-sub {
   display: block;
+
   width: auto;
+
   margin: 6px 0 0;
   padding: 0;
+
   color: #7dd3fc;
+
   font-family: Arial, sans-serif;
   font-size: 10px;
   font-weight: 700;
   line-height: 14px;
+
   letter-spacing: 5px;
+
   white-space: nowrap;
 }
 
 
-/* =========================
-   SIDEBAR MENU
-========================= */
+/* =========================================================
+   SIDEBAR NAVIGATION
+   ========================================================= */
 
 .admin-sidebar nav {
   position: static;
-  top: auto;
-  left: auto;
 
   flex: 0 0 auto;
+
   width: 100%;
+
   margin: 0;
   padding: 0;
 
   display: block;
+
   box-sizing: border-box;
 }
 
 .admin-menu {
   width: 100%;
+
   margin: 0;
   padding: 0;
+
   display: flex;
   flex-direction: column;
-  gap: 6px;
+
+  gap: 8px;
+
   box-sizing: border-box;
 }
 
-.admin-menu a {
+
+/* =========================================================
+   SIDEBAR MENU BUTTONS
+   ========================================================= */
+
+.admin-menu-item {
+  -webkit-appearance: none;
+  appearance: none;
+
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  flex: 0 0 auto;
+
   width: 100%;
   min-height: 48px;
   height: 48px;
+
   margin: 0;
   padding: 0 16px;
+
   box-sizing: border-box;
+
   color: #cbd5e1;
   background: transparent;
-  text-decoration: none;
+
+  border: 1px solid transparent;
+  border-radius: 10px;
+
   font-family: Arial, sans-serif;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 20px;
-  border-radius: 10px;
-  transition: 0.2s ease;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-.admin-menu a:hover {
+.admin-menu-item:hover {
   color: #ffffff;
-  background: #0b354f;
+
+  background: rgba(8, 145, 178, 0.12);
+
+  border-color: rgba(8, 145, 178, 0.18);
 }
 
-.admin-menu a:first-child {
+.admin-menu-item.active {
   color: #ffffff;
-  background: #0c405d;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(8, 145, 178, 0.26),
+      rgba(8, 145, 178, 0.08)
+    );
+
+  border-color: rgba(8, 145, 178, 0.30);
+
+  box-shadow:
+    inset 3px 0 0 #0891b2,
+    0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+.admin-menu-item:active {
+  transform: translateY(1px);
 }
 
 
-/* =========================
-   MENU BADGE
-========================= */
+/* =========================================================
+   BOOKING COUNT BADGE
+   ========================================================= */
 
 .menu-badge {
+  margin-left: auto;
+
+  min-width: 22px;
+  height: 22px;
+
+  padding: 0 7px;
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex: 0 0 auto;
-  min-width: 21px;
-  height: 21px;
-  margin-left: auto;
-  padding: 0 6px;
-  background: #ef4444;
+
+  box-sizing: border-box;
+
   color: #ffffff;
+  background: #ef4444;
+
   border-radius: 999px;
-  font-size: 10px;
+
+  font-size: 11px;
   font-weight: 800;
+  line-height: 1;
 }
 
 
-/* =========================
+/* =========================================================
    SIDEBAR FOOTER
-========================= */
+   ========================================================= */
 
 .sidebar-footer {
   width: 100%;
+
   margin-top: auto;
   padding: 18px 10px 5px;
+
   border-top: 1px solid rgba(255, 255, 255, 0.08);
+
   display: flex;
   flex-direction: column;
+
   gap: 5px;
+
   box-sizing: border-box;
+
   flex-shrink: 0;
 }
 
 .sidebar-footer span {
   display: block;
+
   margin: 0;
   padding: 0;
+
   color: #e2e8f0;
+
   font-size: 12px;
   font-weight: 600;
   line-height: 18px;
@@ -194,84 +290,110 @@ css
 
 .sidebar-footer small {
   display: block;
+
   margin: 0;
   padding: 0;
+
   color: #64748b;
+
   font-size: 10px;
   font-weight: 400;
   line-height: 15px;
 }
 
 
-/* =========================
+/* =========================================================
    LOGOUT
-========================= */
+   ========================================================= */
 
 .logout-button {
   width: 100%;
+
   margin-top: 18px;
   padding: 11px 15px;
+
   background: transparent;
   color: #ffffff;
+
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 8px;
+
   cursor: pointer;
+
   font-family: Arial, sans-serif;
   font-size: 12px;
   font-weight: 600;
-  transition: 0.2s ease;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .logout-button:hover {
   background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
 
-/* =========================
+/* =========================================================
    MAIN CONTENT
-========================= */
+   ========================================================= */
 
 .admin-content {
   width: calc(100% - 260px);
   min-height: 100vh;
+
   margin-left: 260px;
   padding: 40px;
+
   background: #f6f8fb;
+
   display: block;
+
   box-sizing: border-box;
 }
 
 
-/* =========================
+/* =========================================================
    HEADER
-========================= */
+   ========================================================= */
 
 .admin-header {
   width: 100%;
+
   margin: 0 0 32px;
   padding: 0;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   gap: 30px;
+
   box-sizing: border-box;
 }
 
 .admin-eyebrow {
   display: block;
+
   margin: 0 0 8px;
   padding: 0;
+
   color: #0891b2;
+
   font-size: 11px;
   font-weight: 800;
   line-height: 14px;
+
   letter-spacing: 2px;
 }
 
 .admin-header h1 {
   margin: 0 0 8px;
   padding: 0;
+
   color: #0f172a;
+
   font-size: 38px;
   font-weight: 800;
   line-height: 46px;
@@ -280,15 +402,17 @@ css
 .admin-header p {
   margin: 0;
   padding: 0;
+
   color: #64748b;
+
   font-size: 14px;
   line-height: 22px;
 }
 
 
-/* =========================
+/* =========================================================
    BUTTONS
-========================= */
+   ========================================================= */
 
 .primary-button,
 .secondary-button,
@@ -296,18 +420,29 @@ css
 .delete-button,
 .add-item-button {
   font-family: Arial, sans-serif;
+
   border: none;
   outline: none;
+
   cursor: pointer;
+
   font-weight: 700;
-  transition: 0.2s ease;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .primary-button {
   padding: 13px 20px;
+
   background: #0891b2;
   color: #ffffff;
+
   border-radius: 10px;
+
   font-size: 13px;
   line-height: 18px;
 }
@@ -328,9 +463,12 @@ css
 
 .secondary-button {
   padding: 13px 20px;
+
   background: #e2e8f0;
   color: #334155;
+
   border-radius: 10px;
+
   font-size: 13px;
 }
 
@@ -343,58 +481,79 @@ css
 }
 
 
-/* =========================
+/* =========================================================
    STATS
-========================= */
+   ========================================================= */
 
 .stats-grid {
   width: 100%;
+
   margin: 0 0 30px;
   padding: 0;
+
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
   gap: 18px;
+
   box-sizing: border-box;
 }
 
 .stat-card {
   min-width: 0;
+
   padding: 22px;
+
   background: #ffffff;
+
   border: 1px solid #e8edf3;
   border-radius: 14px;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+
+  box-shadow:
+    0 4px 18px rgba(15, 23, 42, 0.04);
+
   box-sizing: border-box;
 }
 
 .stat-card span {
   display: block;
+
   margin: 0 0 10px;
+
   color: #64748b;
+
   font-size: 12px;
   font-weight: 600;
 }
 
 .stat-card strong {
   display: block;
+
   color: #082f49;
+
   font-size: 30px;
   font-weight: 800;
   line-height: 34px;
 }
 
 
-/* =========================
+/* =========================================================
    MESSAGES
-========================= */
+   ========================================================= */
 
 .success-message,
 .error-message {
   width: 100%;
+
   margin: 0 0 20px;
   padding: 14px 18px;
+
   border-radius: 10px;
+
   box-sizing: border-box;
+
   font-size: 13px;
   font-weight: 600;
   line-height: 20px;
@@ -403,45 +562,59 @@ css
 .success-message {
   background: #ecfdf5;
   color: #047857;
+
   border: 1px solid #a7f3d0;
 }
 
 .error-message {
   background: #fef2f2;
   color: #b91c1c;
+
   border: 1px solid #fecaca;
 }
 
 
-/* =========================
+/* =========================================================
    PANELS
-========================= */
+   ========================================================= */
 
 .admin-panel {
   width: 100%;
+
   margin: 0 0 25px;
   padding: 28px;
+
   background: #ffffff;
+
   border: 1px solid #e8edf3;
   border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+
+  box-shadow:
+    0 4px 20px rgba(15, 23, 42, 0.04);
+
   box-sizing: border-box;
 }
 
 .panel-heading {
   width: 100%;
+
   margin: 0 0 25px;
   padding: 0;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   gap: 20px;
+
   box-sizing: border-box;
 }
 
 .panel-heading h2 {
   margin: 6px 0 0;
+
   color: #0f172a;
+
   font-size: 24px;
   font-weight: 800;
   line-height: 30px;
@@ -449,21 +622,26 @@ css
 
 .panel-description {
   margin: 8px 0 0;
+
   color: #64748b;
+
   font-size: 14px;
   line-height: 1.6;
 }
 
 
-/* =========================
+/* =========================================================
    FORM SECTIONS
-========================= */
+   ========================================================= */
 
 .form-section {
   width: 100%;
+
   margin: 0;
   padding: 25px 0;
+
   border-top: 1px solid #edf1f5;
+
   box-sizing: border-box;
 }
 
@@ -474,32 +652,41 @@ css
 
 .form-section h3 {
   margin: 0 0 18px;
+
   color: #082f49;
+
   font-size: 16px;
   font-weight: 800;
 }
 
 
-/* =========================
+/* =========================================================
    FORM GRID
-========================= */
+   ========================================================= */
 
 .form-grid {
   width: 100%;
+
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
   gap: 18px;
 }
 
 .form-group {
   min-width: 0;
+
   display: flex;
   flex-direction: column;
+
   gap: 7px;
 }
 
 .form-group label {
   color: #475569;
+
   font-size: 12px;
   font-weight: 700;
 }
@@ -511,17 +698,28 @@ css
 .filters select {
   width: 100%;
   min-height: 44px;
+
   margin: 0;
   padding: 11px 13px;
+
   background: #f8fafc;
   color: #172033;
+
   border: 1px solid #dbe3ec;
   border-radius: 9px;
+
   outline: none;
+
   box-sizing: border-box;
+
   font-family: Arial, sans-serif;
   font-size: 13px;
   line-height: 20px;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .form-group textarea {
@@ -535,7 +733,11 @@ css
 .filters input:focus,
 .filters select:focus {
   background: #ffffff;
+
   border-color: #0891b2;
+
+  box-shadow:
+    0 0 0 3px rgba(8, 145, 178, 0.08);
 }
 
 .full-width {
@@ -543,44 +745,58 @@ css
 }
 
 
-/* =========================
+/* =========================================================
    CHECKBOX
-========================= */
+   ========================================================= */
 
 .checkbox-label {
   min-height: 44px;
+
   margin-top: 23px;
   padding: 0 13px;
+
   display: flex;
   align-items: center;
+
   gap: 10px;
+
   background: #f8fafc;
+
   border: 1px solid #dbe3ec;
   border-radius: 9px;
+
   color: #334155;
+
   font-size: 13px;
   font-weight: 600;
+
   cursor: pointer;
 }
 
 .checkbox-label input {
   width: 17px;
   height: 17px;
+
   margin: 0;
+
   accent-color: #0891b2;
 }
 
 
-/* =========================
+/* =========================================================
    IMAGE UPLOAD
-========================= */
+   ========================================================= */
 
 .upload-box {
   width: 100%;
+
   background: #f8fafc;
+
   border: 2px dashed #cbd5e1;
   border-radius: 12px;
+
   overflow: hidden;
+
   box-sizing: border-box;
 }
 
@@ -591,13 +807,18 @@ css
 .upload-box label {
   width: 100%;
   min-height: 150px;
+
   padding: 20px;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
   gap: 8px;
+
   cursor: pointer;
+
   box-sizing: border-box;
 }
 
@@ -608,12 +829,16 @@ css
 .upload-icon {
   width: 46px;
   height: 46px;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   background: #e0f2fe;
   color: #0891b2;
+
   border-radius: 50%;
+
   font-size: 26px;
 }
 
@@ -628,22 +853,30 @@ css
 }
 
 
-/* =========================
+/* =========================================================
    IMAGE GALLERY
-========================= */
+   ========================================================= */
 
 .image-gallery {
   width: 100%;
+
   margin-top: 18px;
+
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+
+  grid-template-columns:
+    repeat(auto-fill, minmax(170px, 1fr));
+
   gap: 14px;
 }
 
 .image-item {
   position: relative;
+
   overflow: hidden;
+
   background: #f1f5f9;
+
   border: 2px solid transparent;
   border-radius: 11px;
 }
@@ -655,37 +888,51 @@ css
 .image-item img {
   width: 100%;
   height: 140px;
+
   display: block;
+
   object-fit: cover;
 }
 
 .main-badge {
   position: absolute;
+
   top: 8px;
   left: 8px;
+
   padding: 5px 8px;
+
   background: #0891b2;
   color: #ffffff;
+
   border-radius: 5px;
+
   font-size: 9px;
   font-weight: 800;
 }
 
 .image-actions {
   padding: 7px;
+
   display: flex;
+
   gap: 6px;
 }
 
 .image-actions button {
   flex: 1;
+
   padding: 8px;
+
   background: #e2e8f0;
   color: #334155;
+
   border: none;
   border-radius: 7px;
+
   font-size: 11px;
   font-weight: 700;
+
   cursor: pointer;
 }
 
@@ -695,37 +942,50 @@ css
 }
 
 
-/* =========================
+/* =========================================================
    LIST EDITOR
-========================= */
+   ========================================================= */
 
 .list-editor-header {
   width: 100%;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   gap: 15px;
 }
 
 .list-add-row {
   width: 100%;
+
   display: flex;
+
   gap: 10px;
+
   margin-bottom: 18px;
+
   box-sizing: border-box;
 }
 
 .list-add-input {
   flex: 1;
+
   min-width: 0;
   min-height: 44px;
+
   padding: 11px 13px;
+
   background: #f8fafc;
   color: #172033;
+
   border: 1px solid #dbe3ec;
   border-radius: 9px;
+
   outline: none;
+
   box-sizing: border-box;
+
   font-family: Arial, sans-serif;
   font-size: 13px;
 }
@@ -741,159 +1001,209 @@ css
 
 .list-add-row .add-item-button {
   flex-shrink: 0;
+
   min-height: 44px;
+
   padding: 0 16px;
 }
 
 .add-item-button {
   padding: 9px 14px;
+
   background: #e0f2fe;
   color: #0369a1;
+
   border-radius: 8px;
+
   font-size: 11px;
 }
 
 .empty-list {
   margin: 0;
+
   color: #94a3b8;
+
   font-size: 12px;
 }
 
 .items-list {
   display: flex;
   flex-direction: column;
+
   gap: 8px;
 }
 
 .list-item {
   min-width: 0;
+
   padding: 10px 12px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   gap: 15px;
+
   background: #f8fafc;
+
   border: 1px solid #e2e8f0;
   border-radius: 8px;
 }
 
 .list-item span {
   min-width: 0;
+
   color: #334155;
+
   font-size: 12px;
   line-height: 18px;
 }
 
 .list-item button {
   flex-shrink: 0;
+
   width: 27px;
   height: 27px;
+
   padding: 0;
+
   background: #fee2e2;
   color: #b91c1c;
+
   border: none;
   border-radius: 50%;
+
   cursor: pointer;
+
   font-size: 17px;
 }
 
 
-/* =========================
+/* =========================================================
    FORM SUBMIT
-========================= */
+   ========================================================= */
 
 .form-submit {
   padding-top: 25px;
+
   display: flex;
+
   gap: 10px;
 }
 
 
-/* =========================
+/* =========================================================
    FILTERS
-========================= */
+   ========================================================= */
 
 .filters {
   width: 100%;
+
   margin-bottom: 22px;
+
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(180px, 1fr);
+
+  grid-template-columns:
+    minmax(0, 2fr)
+    minmax(180px, 1fr);
+
   gap: 12px;
 }
 
 
-/* =========================
+/* =========================================================
    TRIPS GRID
-========================= */
+   ========================================================= */
 
 .trips-admin-grid {
   width: 100%;
+
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
   gap: 18px;
 }
 
 .admin-trip-card {
   min-width: 0;
+
   overflow: hidden;
+
   background: #ffffff;
+
   border: 1px solid #e2e8f0;
   border-radius: 13px;
 }
 
 
-/* =========================
+/* =========================================================
    TRIP IMAGE
-========================= */
+   ========================================================= */
 
 .admin-trip-image {
   position: relative;
+
   width: 100%;
   height: 190px;
+
   background: #e2e8f0;
+
   overflow: hidden;
 }
 
 .admin-trip-image img {
   width: 100%;
   height: 100%;
+
   display: block;
+
   object-fit: cover;
 }
 
 .image-placeholder {
   width: 100%;
   height: 100%;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   color: #64748b;
+
   font-size: 13px;
 }
 
 
-/* =========================
-   BADGES
-========================= */
+/* =========================================================
+   TRIP BADGES
+   ========================================================= */
 
 .featured-badge,
 .status-badge {
   position: absolute;
+
   top: 10px;
+
   padding: 5px 8px;
+
   border-radius: 5px;
+
   font-size: 9px;
   font-weight: 800;
 }
 
 .featured-badge {
   left: 10px;
+
   background: #f59e0b;
   color: #ffffff;
 }
 
 .status-badge {
   right: 10px;
+
   background: #dcfce7;
   color: #166534;
 }
@@ -914,9 +1224,9 @@ css
 }
 
 
-/* =========================
+/* =========================================================
    TRIP BODY
-========================= */
+   ========================================================= */
 
 .admin-trip-body {
   padding: 18px;
@@ -924,61 +1234,82 @@ css
 
 .trip-destination {
   display: block;
+
   margin-bottom: 6px;
+
   color: #0891b2;
+
   font-size: 10px;
   font-weight: 800;
+
   text-transform: uppercase;
+
   letter-spacing: 1px;
 }
 
 .admin-trip-body h3 {
   margin: 0 0 8px;
+
   color: #172033;
+
   font-size: 18px;
   font-weight: 800;
 }
 
 .admin-trip-body p {
   margin: 0 0 15px;
+
   color: #64748b;
+
   font-size: 12px;
   line-height: 19px;
+
   min-height: 38px;
 }
 
 
-/* =========================
+/* =========================================================
    TRIP META
-========================= */
+   ========================================================= */
 
 .trip-meta {
   padding: 13px 0;
+
   display: flex;
   flex-direction: column;
+
   gap: 6px;
+
   border-top: 1px solid #e2e8f0;
   border-bottom: 1px solid #e2e8f0;
+
   color: #475569;
+
   font-size: 11px;
 }
 
 
-/* =========================
+/* =========================================================
    CARD ACTIONS
-========================= */
+   ========================================================= */
 
 .card-actions {
   margin-top: 13px;
+
   display: grid;
-  grid-template-columns: 1fr 1fr;
+
+  grid-template-columns:
+    1fr 1fr;
+
   gap: 8px;
 }
 
 .edit-button,
 .delete-button {
   padding: 10px;
+
   border-radius: 8px;
+
   font-size: 11px;
 }
 
@@ -992,73 +1323,106 @@ css
   color: #b91c1c;
 }
 
+.edit-button:hover {
+  background: #bae6fd;
+}
 
-/* =========================
+.delete-button:hover {
+  background: #fecaca;
+}
+
+
+/* =========================================================
    EMPTY STATE
-========================= */
+   ========================================================= */
 
 .empty-state {
   padding: 55px 20px;
+
   text-align: center;
+
   color: #64748b;
 }
 
 .empty-state h3 {
   margin: 0 0 8px;
+
   color: #334155;
+
   font-size: 18px;
 }
 
 .empty-state p {
   margin: 0;
+
   color: #94a3b8;
+
   font-size: 13px;
 }
 
 
-/* =====================================================
+/* =========================================================
    BOOKINGS
-===================================================== */
+   ========================================================= */
 
 .bookings-panel {
   margin-top: 40px;
 }
 
 
-/* =========================
+/* =========================================================
    BOOKING STATS
-========================= */
+   ========================================================= */
 
 .booking-stats {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
   gap: 16px;
+
   margin: 28px 0;
 }
 
 .booking-stat-card {
   position: relative;
+
   overflow: hidden;
+
   padding: 22px;
+
   background: #ffffff;
+
   border: 1px solid #e5eaf0;
   border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.04);
-  transition: 0.2s ease;
+
+  box-shadow:
+    0 6px 20px rgba(15, 23, 42, 0.04);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .booking-stat-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.07);
+
+  box-shadow:
+    0 10px 28px rgba(15, 23, 42, 0.07);
 }
 
 .booking-stat-card::before {
   content: "";
+
   position: absolute;
+
   top: 0;
   left: 0;
+
   width: 4px;
   height: 100%;
+
   background: #0891b2;
 }
 
@@ -1076,19 +1440,27 @@ css
 
 .booking-stat-card span {
   display: block;
+
   margin-bottom: 10px;
+
   color: #64748b;
+
   font-size: 12px;
   font-weight: 700;
+
   text-transform: uppercase;
+
   letter-spacing: 0.6px;
 }
 
 .booking-stat-card strong {
   display: block;
+
   color: #0f172a;
+
   font-size: 32px;
   font-weight: 800;
+
   line-height: 1;
 }
 
@@ -1105,14 +1477,19 @@ css
 }
 
 
-/* =========================
+/* =========================================================
    BOOKING FILTERS
-========================= */
+   ========================================================= */
 
 .booking-filters {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 220px;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    220px;
+
   gap: 12px;
+
   margin-bottom: 24px;
 }
 
@@ -1120,16 +1497,25 @@ css
 .booking-filters select {
   width: 100%;
   min-height: 46px;
+
   padding: 0 15px;
+
   background: #ffffff;
   color: #172033;
+
   border: 1px solid #dbe3ec;
   border-radius: 10px;
+
   outline: none;
+
   box-sizing: border-box;
+
   font-family: Arial, sans-serif;
   font-size: 13px;
-  transition: 0.2s ease;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .booking-filters input::placeholder {
@@ -1139,55 +1525,73 @@ css
 .booking-filters input:focus,
 .booking-filters select:focus {
   border-color: #0891b2;
-  box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.08);
+
+  box-shadow:
+    0 0 0 3px rgba(8, 145, 178, 0.08);
 }
 
 
-/* =========================
+/* =========================================================
    BOOKINGS LIST
-========================= */
+   ========================================================= */
 
 .bookings-list {
   display: flex;
   flex-direction: column;
+
   gap: 18px;
 }
 
 
-/* =========================
+/* =========================================================
    BOOKING CARD
-========================= */
+   ========================================================= */
 
 .booking-card {
   display: grid;
+
   grid-template-columns:
     220px
     minmax(0, 1fr)
     minmax(0, 1.1fr);
+
   gap: 26px;
+
   padding: 24px;
+
   background: #ffffff;
+
   border: 1px solid #e5eaf0;
   border-radius: 18px;
-  box-shadow: 0 6px 24px rgba(15, 23, 42, 0.04);
+
+  box-shadow:
+    0 6px 24px rgba(15, 23, 42, 0.04);
+
   box-sizing: border-box;
-  transition: 0.2s ease;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .booking-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.07);
+
+  box-shadow:
+    0 12px 30px rgba(15, 23, 42, 0.07);
 }
 
 
-/* =========================
+/* =========================================================
    BOOKING TRIP
-========================= */
+   ========================================================= */
 
 .booking-trip {
   min-width: 0;
+
   display: flex;
   flex-direction: column;
+
   gap: 12px;
 }
 
@@ -1195,163 +1599,215 @@ css
 .booking-image-placeholder {
   width: 100%;
   height: 145px;
+
   display: flex;
+
   object-fit: cover;
+
   border-radius: 13px;
 }
 
 .booking-image-placeholder {
   align-items: center;
   justify-content: center;
+
   background: #f1f5f9;
+
   color: #94a3b8;
+
   font-size: 12px;
 }
 
 .booking-trip span {
   color: #0891b2;
+
   font-size: 10px;
   font-weight: 800;
+
   text-transform: uppercase;
+
   letter-spacing: 1px;
 }
 
 .booking-trip h3 {
   margin: 0;
+
   color: #0f172a;
+
   font-size: 18px;
   font-weight: 800;
+
   line-height: 24px;
 }
 
 
-/* =========================
+/* =========================================================
    BOOKING SECTIONS
-========================= */
+   ========================================================= */
 
 .booking-section {
   min-width: 0;
+
   padding: 0;
 }
 
 .booking-section-title {
   display: block;
+
   margin-bottom: 12px;
+
   color: #94a3b8;
+
   font-size: 10px;
   font-weight: 800;
+
   text-transform: uppercase;
+
   letter-spacing: 1.2px;
 }
 
 
-/* =========================
+/* =========================================================
    CUSTOMER INFO
-========================= */
+   ========================================================= */
 
 .booking-customer-info {
   display: flex;
   flex-direction: column;
+
   gap: 9px;
 }
 
 .booking-customer-info strong {
   color: #0f172a;
+
   font-size: 17px;
   font-weight: 800;
 }
 
 .booking-customer-info span {
   display: block;
+
   color: #475569;
+
   font-size: 13px;
   line-height: 19px;
+
   word-break: break-word;
 }
 
 
-/* =========================
+/* =========================================================
    BOOKING DETAILS
-========================= */
+   ========================================================= */
 
 .booking-details-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
   gap: 10px;
 }
 
 .booking-details-grid div {
   min-width: 0;
+
   padding: 13px;
+
   background: #f8fafc;
+
   border: 1px solid #edf1f5;
   border-radius: 10px;
 }
 
 .booking-details-grid small {
   display: block;
+
   margin-bottom: 6px;
+
   color: #94a3b8;
+
   font-size: 10px;
   font-weight: 700;
+
   text-transform: uppercase;
 }
 
 .booking-details-grid strong {
   display: block;
+
   overflow: hidden;
+
   color: #172033;
+
   font-size: 13px;
   font-weight: 700;
+
   line-height: 18px;
+
   text-overflow: ellipsis;
 }
 
 
-/* =========================
-   NOTES
-========================= */
+/* =========================================================
+   BOOKING NOTES
+   ========================================================= */
 
 .booking-notes {
   margin: 15px 0 0;
   padding: 13px 15px;
+
   background: #f8fafc;
+
   border-left: 3px solid #0891b2;
   border-radius: 8px;
+
   color: #475569;
+
   font-size: 13px;
   line-height: 20px;
 }
 
 
-/* =========================
+/* =========================================================
    BOOKING ACTIONS
-========================= */
+   ========================================================= */
 
 .booking-actions {
   grid-column: 1 / -1;
+
   padding-top: 18px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   gap: 20px;
+
   border-top: 1px solid #edf1f5;
 }
 
 
-/* =========================
+/* =========================================================
    BOOKING STATUS
-========================= */
+   ========================================================= */
 
 .booking-status-badge {
   display: inline-flex;
+
   align-items: center;
   justify-content: center;
+
   min-height: 30px;
+
   padding: 0 13px;
+
   border-radius: 999px;
+
   font-size: 11px;
   font-weight: 800;
+
   text-transform: capitalize;
 }
 
@@ -1371,28 +1827,40 @@ css
 }
 
 
-/* =========================
-   STATUS BUTTONS
-========================= */
+/* =========================================================
+   BOOKING STATUS BUTTONS
+   ========================================================= */
 
 .booking-status-actions {
   display: flex;
+
   gap: 8px;
+
   flex-wrap: wrap;
 }
 
 .booking-status-button {
   min-height: 36px;
+
   padding: 0 14px;
+
   background: #f8fafc;
   color: #475569;
+
   border: 1px solid #e2e8f0;
   border-radius: 8px;
+
   cursor: pointer;
+
   font-family: Arial, sans-serif;
   font-size: 11px;
   font-weight: 700;
-  transition: 0.2s ease;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .booking-status-button:hover {
@@ -1418,47 +1886,274 @@ css
 }
 
 
-/* =========================
+/* =========================================================
+   BOOKING DELETE
+   ========================================================= */
+
+.booking-delete-button {
+  margin-top: 10px;
+
+  padding: 9px 14px;
+
+  border: 1px solid #dc2626;
+  border-radius: 8px;
+
+  background: transparent;
+  color: #dc2626;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.booking-delete-button:hover {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+
+/* =========================================================
+   DASHBOARD TOPBAR
+   ========================================================= */
+
+.dashboard-topbar {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 24px;
+}
+
+.dashboard-topbar h2 {
+  margin: 0 0 6px;
+}
+
+.dashboard-topbar p {
+  margin: 0;
+
+  color: #64748b;
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   NOTIFICATIONS
+   ========================================================= */
+
+.admin-notification-area {
+  position: relative;
+
+  display: inline-flex;
+  align-items: center;
+}
+
+.notification-button {
+  position: relative;
+
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+
+  font-size: 20px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.notification-button:hover {
+  background: rgba(255, 255, 255, 0.09);
+
+  border-color:
+    rgba(255, 255, 255, 0.20);
+}
+
+.notification-count {
+  position: absolute;
+
+  top: -6px;
+  right: -6px;
+
+  min-width: 20px;
+  height: 20px;
+
+  padding: 0 5px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 999px;
+
+  background: #dc2626;
+  color: #ffffff;
+
+  font-size: 11px;
+  font-weight: 800;
+
+  box-sizing: border-box;
+}
+
+.notification-dropdown {
+  position: absolute;
+
+  top: calc(100% + 12px);
+  right: 0;
+
+  z-index: 1100;
+
+  width: 360px;
+  max-height: 430px;
+
+  overflow-y: auto;
+
+  background: #111111;
+
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 14px;
+
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.45);
+
+  display: none;
+}
+
+.admin-notification-area:hover
+.notification-dropdown {
+  display: block;
+}
+
+.notification-header {
+  padding: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  border-bottom:
+    1px solid rgba(255, 255, 255, 0.08);
+}
+
+.notification-header span {
+  color: #888888;
+
+  font-size: 12px;
+}
+
+.notification-item {
+  padding: 14px 16px;
+
+  border-bottom:
+    1px solid rgba(255, 255, 255, 0.06);
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-item.unread {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.notification-item strong {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: #ffffff;
+}
+
+.notification-item p {
+  margin: 0 0 6px;
+
+  color: #cccccc;
+
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.notification-item small {
+  color: #777777;
+
+  font-size: 11px;
+}
+
+.notification-empty {
+  padding: 25px 16px;
+
+  margin: 0;
+
+  color: #888888;
+
+  text-align: center;
+}
+
+
+/* =========================================================
    TABLET
-========================= */
+   ========================================================= */
 
 @media (max-width: 1200px) {
-
   .admin-content {
     padding: 30px;
   }
 
   .trips-admin-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
   }
-
 }
 
 
-/* =========================
+/* =========================================================
    SMALL TABLET
-========================= */
+   ========================================================= */
 
 @media (max-width: 1100px) {
-
   .admin-sidebar {
     width: 220px;
   }
 
   .admin-content {
     width: calc(100% - 220px);
+
     margin-left: 220px;
+
     padding: 25px;
   }
 
   .stats-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
   }
 
   .booking-card {
     grid-template-columns:
       180px
       minmax(0, 1fr);
+
     gap: 22px;
   }
 
@@ -1476,28 +2171,30 @@ css
   }
 
   .booking-stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
   }
-
 }
 
 
-/* =========================
+/* =========================================================
    MOBILE
-========================= */
+   ========================================================= */
 
 @media (max-width: 750px) {
-
   .admin-page {
     display: block;
   }
 
   .admin-sidebar {
     position: relative;
+
     width: 100%;
     height: auto;
     min-height: 0;
+
     padding: 20px;
+
     overflow: visible;
   }
 
@@ -1507,17 +2204,34 @@ css
 
   .admin-menu {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 7px;
+
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    gap: 8px;
   }
 
-  .admin-menu a {
+  .admin-menu-item {
+    min-height: 44px;
+    height: 44px;
+
+    padding: 0 10px;
+
     justify-content: center;
-    min-height: 42px;
-    height: 42px;
-    padding: 0 8px;
+
     font-size: 12px;
+
     text-align: center;
+  }
+
+  .admin-menu-item.active {
+    box-shadow:
+      inset 0 3px 0 #0891b2,
+      0 4px 14px rgba(0, 0, 0, 0.12);
+  }
+
+  .menu-badge {
+    margin-left: 6px;
   }
 
   .sidebar-footer {
@@ -1526,12 +2240,15 @@ css
 
   .admin-content {
     width: 100%;
+
     margin-left: 0;
+
     padding: 20px 15px;
   }
 
   .admin-header {
     align-items: flex-start;
+
     flex-direction: column;
   }
 
@@ -1556,7 +2273,9 @@ css
 
   .booking-card {
     grid-template-columns: 1fr;
+
     gap: 20px;
+
     padding: 20px;
   }
 
@@ -1570,11 +2289,13 @@ css
   }
 
   .booking-details-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
   }
 
   .booking-actions {
     flex-direction: column;
+
     align-items: flex-start;
   }
 
@@ -1582,15 +2303,23 @@ css
     width: 100%;
   }
 
+  .notification-dropdown {
+    position: fixed;
+
+    top: 80px;
+    right: 15px;
+    left: 15px;
+
+    width: auto;
+  }
 }
 
 
-/* =========================
+/* =========================================================
    SMALL MOBILE
-========================= */
+   ========================================================= */
 
 @media (max-width: 500px) {
-
   .stats-grid {
     grid-template-columns: 1fr;
   }
@@ -1601,6 +2330,7 @@ css
 
   .panel-heading {
     align-items: flex-start;
+
     flex-direction: column;
   }
 
@@ -1613,7 +2343,8 @@ css
   }
 
   .image-gallery {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
   }
 
   .admin-logo-main {
@@ -1626,6 +2357,7 @@ css
 
   .booking-card {
     padding: 16px;
+
     border-radius: 14px;
   }
 
@@ -1640,12 +2372,1054 @@ css
 
   .booking-status-actions {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+
+    grid-template-columns:
+      1fr 1fr;
+
     width: 100%;
   }
 
   .booking-status-button {
     width: 100%;
   }
+}
 
+
+/* =========================================================
+   ACCESSIBILITY / FOCUS
+   ========================================================= */
+
+.admin-menu-item:focus-visible,
+.primary-button:focus-visible,
+.secondary-button:focus-visible,
+.edit-button:focus-visible,
+.delete-button:focus-visible,
+.logout-button:focus-visible,
+.booking-status-button:focus-visible,
+.booking-delete-button:focus-visible,
+.notification-button:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-menu-item,
+  .primary-button,
+  .secondary-button,
+  .edit-button,
+  .delete-button,
+  .logout-button,
+  .booking-stat-card,
+  .booking-card,
+  .booking-status-button,
+  .notification-button {
+    transition: none;
+  }
+}
+
+/* =========================================================
+   ACCOUNT MANAGEMENT
+   ========================================================= */
+
+.account-management-section {
+  width: 100%;
+}
+
+
+/* =========================================================
+   ACCOUNT PAGE HEADER
+   ========================================================= */
+
+.account-page-header {
+  width: 100%;
+
+  margin-bottom: 28px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 24px;
+}
+
+.account-page-title {
+  min-width: 0;
+}
+
+.account-page-eyebrow,
+.account-card-eyebrow {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #0891b2;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+}
+
+.account-page-title h2 {
+  margin: 0 0 8px;
+
+  color: #0f172a;
+
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 40px;
+}
+
+.account-page-title p {
+  max-width: 650px;
+
+  margin: 0;
+
+  color: #64748b;
+
+  font-size: 14px;
+  line-height: 22px;
+}
+
+
+/* =========================================================
+   ACCOUNT ADD BUTTON
+   ========================================================= */
+
+.account-add-button {
+  min-height: 46px;
+
+  padding: 0 18px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  background: #0891b2;
+  color: #ffffff;
+
+  border: none;
+  border-radius: 10px;
+
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 7px 18px rgba(8, 145, 178, 0.18);
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.account-add-button:hover {
+  background: #0e7490;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 10px 24px rgba(8, 145, 178, 0.22);
+}
+
+.account-add-icon {
+  width: 22px;
+  height: 22px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 6px;
+
+  background: rgba(255, 255, 255, 0.16);
+
+  font-size: 17px;
+  line-height: 1;
+}
+
+
+/* =========================================================
+   ACCOUNT CREATE CARD
+   ========================================================= */
+
+.account-create-card,
+.account-users-card,
+.account-password-card {
+  width: 100%;
+
+  margin-bottom: 22px;
+
+  background: #ffffff;
+
+  border: 1px solid #e4eaf1;
+  border-radius: 16px;
+
+  box-shadow:
+    0 6px 24px rgba(15, 23, 42, 0.045);
+
+  box-sizing: border-box;
+}
+
+.account-create-card {
+  padding: 26px;
+}
+
+.account-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 24px;
+}
+
+.account-card-header h3,
+.account-password-content h3 {
+  margin: 0 0 6px;
+
+  color: #0f172a;
+
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 26px;
+}
+
+.account-card-header p,
+.account-password-content p {
+  margin: 0;
+
+  color: #64748b;
+
+  font-size: 13px;
+  line-height: 20px;
+}
+
+
+/* =========================================================
+   ACCOUNT FORM
+   ========================================================= */
+
+.account-form-grid {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 18px;
+}
+
+.account-form-group {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+.account-form-group label {
+  color: #334155;
+
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.account-form-group input,
+.account-form-group select {
+  width: 100%;
+  min-height: 46px;
+
+  padding: 0 13px;
+
+  background: #f8fafc;
+  color: #172033;
+
+  border: 1px solid #dbe3ec;
+  border-radius: 9px;
+
+  outline: none;
+
+  box-sizing: border-box;
+
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.account-form-group input:focus,
+.account-form-group select:focus {
+  background: #ffffff;
+
+  border-color: #0891b2;
+
+  box-shadow:
+    0 0 0 3px rgba(8, 145, 178, 0.08);
+}
+
+.account-form-group input::placeholder {
+  color: #94a3b8;
+}
+
+.account-form-group small {
+  color: #94a3b8;
+
+  font-size: 10px;
+  line-height: 15px;
+}
+
+
+/* =========================================================
+   ACCOUNT FORM ACTIONS
+   ========================================================= */
+
+.account-form-actions {
+  margin-top: 22px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+}
+
+.account-primary-button,
+.account-secondary-button {
+  min-height: 42px;
+
+  padding: 0 18px;
+
+  border-radius: 9px;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.account-primary-button {
+  background: #0891b2;
+  color: #ffffff;
+
+  border: 1px solid #0891b2;
+}
+
+.account-primary-button:hover {
+  background: #0e7490;
+  border-color: #0e7490;
+
+  transform: translateY(-1px);
+}
+
+.account-secondary-button {
+  background: #ffffff;
+  color: #475569;
+
+  border: 1px solid #dbe3ec;
+}
+
+.account-secondary-button:hover {
+  background: #f8fafc;
+
+  border-color: #cbd5e1;
+}
+
+.account-primary-button:disabled,
+.account-secondary-button:disabled,
+.account-action-button:disabled {
+  opacity: 0.55;
+
+  cursor: not-allowed;
+
+  transform: none;
+}
+
+
+/* =========================================================
+   USERS CARD
+   ========================================================= */
+
+.account-users-card {
+  overflow: hidden;
+}
+
+.account-users-card > .account-card-header {
+  margin: 0;
+
+  padding: 26px;
+
+  border-bottom: 1px solid #edf1f5;
+}
+
+.users-header {
+  align-items: center;
+}
+
+.account-users-count {
+  min-width: 76px;
+
+  padding: 10px 13px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  background: #f0f9ff;
+
+  border: 1px solid #bae6fd;
+  border-radius: 10px;
+
+  box-sizing: border-box;
+}
+
+.account-users-count strong {
+  color: #0369a1;
+
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 22px;
+}
+
+.account-users-count span {
+  margin-top: 3px;
+
+  color: #0284c7;
+
+  font-size: 9px;
+  font-weight: 800;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.7px;
+}
+
+
+/* =========================================================
+   USERS TABLE
+   ========================================================= */
+
+.account-users-table {
+  width: 100%;
+}
+
+.account-table-head {
+  min-height: 42px;
+
+  padding: 0 26px;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(250px, 1.8fr)
+    150px
+    130px
+    minmax(190px, 1fr);
+
+  align-items: center;
+
+  gap: 18px;
+
+  background: #f8fafc;
+
+  border-bottom: 1px solid #edf1f5;
+
+  box-sizing: border-box;
+}
+
+.account-table-head span {
+  color: #94a3b8;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  text-transform: uppercase;
+
+  letter-spacing: 1px;
+}
+
+.account-table-body {
+  width: 100%;
+}
+
+.account-user-row {
+  min-height: 84px;
+
+  padding: 15px 26px;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(250px, 1.8fr)
+    150px
+    130px
+    minmax(190px, 1fr);
+
+  align-items: center;
+
+  gap: 18px;
+
+  border-bottom: 1px solid #edf1f5;
+
+  box-sizing: border-box;
+
+  transition:
+    background 0.2s ease;
+}
+
+.account-user-row:last-child {
+  border-bottom: none;
+}
+
+.account-user-row:hover {
+  background: #fbfdff;
+}
+
+.account-user-row.current-user {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(8, 145, 178, 0.035),
+      transparent
+    );
+}
+
+
+/* =========================================================
+   USER CELL
+   ========================================================= */
+
+.account-user-cell {
+  min-width: 0;
+}
+
+.account-user-main {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+}
+
+.account-user-avatar {
+  flex: 0 0 auto;
+
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0e7490,
+      #0891b2
+    );
+
+  color: #ffffff;
+
+  border-radius: 11px;
+
+  font-size: 15px;
+  font-weight: 800;
+
+  box-shadow:
+    0 5px 14px rgba(8, 145, 178, 0.18);
+}
+
+.account-user-details {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.account-user-details strong {
+  overflow: hidden;
+
+  color: #172033;
+
+  font-size: 13px;
+  font-weight: 800;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.account-user-details span {
+  overflow: hidden;
+
+  color: #64748b;
+
+  font-size: 11px;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.account-user-details small {
+  color: #0891b2;
+
+  font-size: 9px;
+  font-weight: 800;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.7px;
+}
+
+
+/* =========================================================
+   ROLE
+   ========================================================= */
+
+.account-role-select {
+  width: 100%;
+  min-height: 36px;
+
+  padding: 0 10px;
+
+  background: #f8fafc;
+  color: #334155;
+
+  border: 1px solid #dbe3ec;
+  border-radius: 8px;
+
+  outline: none;
+
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.account-role-select:focus {
+  border-color: #0891b2;
+
+  box-shadow:
+    0 0 0 3px rgba(8, 145, 178, 0.08);
+}
+
+.account-role-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 28px;
+
+  padding: 0 10px;
+
+  border-radius: 999px;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.5px;
+}
+
+.account-role-badge.admin {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+.account-role-badge.manager {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.account-status-badge {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+
+  min-height: 28px;
+
+  padding: 0 10px;
+
+  border-radius: 999px;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.4px;
+}
+
+.account-status-badge.active {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.account-status-badge.inactive {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.account-status-dot {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: currentColor;
+}
+
+
+/* =========================================================
+   USER ACTIONS
+   ========================================================= */
+
+.account-user-actions {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+}
+
+.account-action-button {
+  min-height: 34px;
+
+  padding: 0 11px;
+
+  border-radius: 7px;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.account-action-button.secondary {
+  background: #ffffff;
+  color: #475569;
+
+  border: 1px solid #dbe3ec;
+}
+
+.account-action-button.secondary:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.account-action-button.danger {
+  background: #fff1f2;
+  color: #be123c;
+
+  border: 1px solid #fecdd3;
+}
+
+.account-action-button.danger:hover {
+  background: #ffe4e6;
+  border-color: #fda4af;
+}
+
+.account-protected-label {
+  color: #94a3b8;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   LOADING / EMPTY
+   ========================================================= */
+
+.account-loading-state,
+.account-empty-state {
+  min-height: 150px;
+
+  padding: 25px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  text-align: center;
+}
+
+.account-loading-state {
+  color: #64748b;
+
+  font-size: 12px;
+}
+
+.account-loading-dot {
+  width: 9px;
+  height: 9px;
+
+  border-radius: 50%;
+
+  background: #0891b2;
+
+  box-shadow:
+    0 0 0 5px rgba(8, 145, 178, 0.10);
+}
+
+.account-empty-state strong {
+  color: #334155;
+
+  font-size: 14px;
+}
+
+.account-empty-state span {
+  color: #94a3b8;
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   PASSWORD CARD
+   ========================================================= */
+
+.account-password-card {
+  padding: 26px;
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: 18px;
+}
+
+.account-password-icon {
+  flex: 0 0 auto;
+
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #f0f9ff;
+
+  border: 1px solid #bae6fd;
+  border-radius: 12px;
+
+  font-size: 19px;
+}
+
+.account-password-content {
+  flex: 1;
+
+  min-width: 0;
+}
+
+.password-grid {
+  margin-top: 22px;
+}
+
+
+/* =========================================================
+   ACCOUNT MANAGEMENT RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1050px) {
+  .account-table-head,
+  .account-user-row {
+    grid-template-columns:
+      minmax(220px, 1.6fr)
+      130px
+      110px
+      minmax(170px, 1fr);
+
+    gap: 12px;
+  }
+
+  .account-table-head,
+  .account-user-row {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+
+@media (max-width: 850px) {
+  .account-page-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .account-add-button {
+    width: 100%;
+  }
+
+  .account-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .account-users-card {
+    overflow: visible;
+  }
+
+  .account-table-head {
+    display: none;
+  }
+
+  .account-user-row {
+    min-height: 0;
+
+    padding: 20px;
+
+    display: grid;
+
+    grid-template-columns:
+      1fr 1fr;
+
+    gap: 16px;
+
+    border-bottom: 1px solid #edf1f5;
+  }
+
+  .account-user-main {
+    grid-column: 1 / -1;
+  }
+
+  .account-user-cell:nth-child(2),
+  .account-user-cell:nth-child(3) {
+    display: flex;
+    align-items: center;
+  }
+
+  .account-user-actions {
+    grid-column: 1 / -1;
+
+    width: 100%;
+  }
+
+  .account-action-button {
+    flex: 1;
+  }
+
+  .account-role-select {
+    max-width: 180px;
+  }
+}
+
+
+@media (max-width: 600px) {
+  .account-page-title h2 {
+    font-size: 27px;
+    line-height: 34px;
+  }
+
+  .account-create-card,
+  .account-users-card > .account-card-header,
+  .account-password-card {
+    padding: 20px;
+  }
+
+  .account-card-header.users-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .account-users-count {
+    align-self: flex-start;
+  }
+
+  .account-user-row {
+    grid-template-columns: 1fr;
+
+    gap: 13px;
+  }
+
+  .account-user-main,
+  .account-user-cell:nth-child(2),
+  .account-user-cell:nth-child(3),
+  .account-user-actions {
+    grid-column: auto;
+  }
+
+  .account-user-cell:nth-child(2),
+  .account-user-cell:nth-child(3) {
+    display: flex;
+  }
+
+  .account-role-select {
+    max-width: none;
+  }
+
+  .account-user-actions {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: stretch;
+  }
+
+  .account-action-button {
+    width: 100%;
+  }
+
+  .account-password-card {
+    flex-direction: column;
+  }
+
+  .account-password-icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .account-form-actions {
+    flex-direction: column;
+
+    align-items: stretch;
+  }
+
+  .account-primary-button,
+  .account-secondary-button {
+    width: 100%;
+  }
 }

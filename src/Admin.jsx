@@ -34,7 +34,7 @@ const emptySpecialOffersSettings = {
   id: null,
   image: "",
   title_en: "SPECIAL OFFERS",
-  title_ru: "СПЕЦИАЛЬНЫЕ ПРЕДЛОحات",
+  title_ru: "СПЕЦИАЛЬНЫЕ ПРЕДЛОЖЕНИЯ",
   description_en:
     "Discover our best deals and enjoy unforgettable trips at special prices.",
   description_ru:
@@ -48,10 +48,15 @@ const emptySectionForm = {
   slug: "",
   sort_order: 0,
   active: true,
+  image: "",
 };
+
 
 function Admin() {
   const navigate = useNavigate();
+  const [adminRole, setAdminRole] = useState(null);
+
+  const [adminLoading, setAdminLoading] = useState(true);
 
   const [session, setSession] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
@@ -60,6 +65,43 @@ function Admin() {
   const [bookings, setBookings] = useState([]);
   const [bookingsLoading, setBookingsLoading] =
     useState(false);
+  const [adminUsers, setAdminUsers] =
+  useState([]);
+
+const [adminUsersLoading, setAdminUsersLoading] =
+  useState(false);
+
+const [showUserForm, setShowUserForm] =
+  useState(false);
+
+const [userForm, setUserForm] = useState({
+  display_name: "",
+  email: "",
+  password: "",
+  role: "manager",
+});
+
+const [userActionLoading, setUserActionLoading] =
+  useState(false);
+
+const [passwordForm, setPasswordForm] =
+  useState({
+    password: "",
+    confirmPassword: "",
+  });
+
+const [passwordLoading, setPasswordLoading] =
+  useState(false);
+  
+  
+  const [notifications, setNotifications] = useState([]);
+  const [notificationsLoading, setNotificationsLoading] = useState(false);
+
+  const isAdmin = adminRole === "admin";
+  const isManager = adminRole === "manager";
+  const isStaff = isAdmin || isManager;
+
+  const [openSection, setOpenSection] = useState("dashboard");
 
   /* =========================
      SECTIONS
@@ -153,26 +195,166 @@ function Admin() {
   ========================= */
 
   useEffect(() => {
-    async function checkAuth() {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+  async function checkAuth() {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
 
-      setSession(session);
+    if (!session) {
+      setSession(null);
+      setAdminRole(null);
+      setAdminLoading(false);
       setAuthLoading(false);
+
+      navigate("/admin/login", {
+        replace: true,
+      });
+
+      return;
     }
 
-    checkAuth();
-  }, []);
+    setSession(session);
+
+    const { data, error } = await supabase
+      .from("admin_users")
+      .select("role, active")
+      .eq("id", session.user.id)
+      .single();
+
+    if (
+      error ||
+      !data ||
+      !data.active ||
+      !["admin", "manager"].includes(data.role)
+    ) {
+      console.error(
+        "Admin access error:",
+        error
+      );
+
+      setAdminRole(null);
+      setAdminLoading(false);
+      setAuthLoading(false);
+
+      await supabase.auth.signOut();
+
+      navigate("/admin/login", {
+        replace: true,
+      });
+
+      return;
+    }
+
+    setAdminRole(data.role);
+    setAdminLoading(false);
+    setAuthLoading(false);
+  }
+
+  checkAuth();
+}, [navigate]);
 
   useEffect(() => {
-    if (!authLoading && session) {
-      getTrips();
-      getBookings();
-      getSections();
-      getSpecialOffersSettings();
-    }
-  }, [authLoading, session]);
+  if (!authLoading && session) {
+    getTrips();
+    getBookings();
+    getSections();
+    getSpecialOffersSettings();
+    getNotifications();
+    getAdminUsers();
+  }
+}, [authLoading, session]);
+
+
+useEffect(() => {
+  if (!session || !isStaff) {
+    return undefined;
+  }
+
+  const bookingsChannel = supabase
+    .channel("avora-bookings-realtime")
+    .on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "bookings",
+      },
+      async (payload) => {
+        const booking = payload.new;
+
+        setBookings((previous) => {
+          if (
+            previous.some(
+              (item) =>
+                item.id === booking.id
+            )
+          ) {
+            return previous;
+          }
+
+          return [
+            booking,
+            ...previous,
+          ];
+        });
+
+        const customerName =
+          booking.customer_name ||
+          "New customer";
+
+        const tripName =
+          booking.trip_name ||
+          "New booking";
+
+        const notification = {
+          booking_id: booking.id,
+          type: "new_booking",
+          title: "New Booking",
+          message: `${customerName} made a new booking${tripName ? ` for ${tripName}` : ""}.`,
+          read: false,
+        };
+
+        const {
+          data,
+          error,
+        } = await supabase
+          .from("admin_notifications")
+          .insert(notification)
+          .select()
+          .single();
+
+        if (error) {
+          console.error(
+            "Notification creation error:",
+            error
+          );
+
+          return;
+        }
+
+        setNotifications((previous) => [
+          data,
+          ...previous,
+        ]);
+
+        setMessage(
+          `New booking received from ${customerName}.`
+        );
+      }
+    )
+    .subscribe((status) => {
+      console.log(
+        "Bookings realtime status:",
+        status
+      );
+    });
+
+  return () => {
+    supabase.removeChannel(
+      bookingsChannel
+    );
+  };
+}, [session, isStaff]);
 
   /* =========================
      LOGOUT
@@ -245,6 +427,372 @@ function Admin() {
     setTrips(data || []);
   }
 
+  async function getAdminUsers() {
+  setAdminUsersLoading(true);
+  setErrorMessage("");
+
+  const { data, error } = await supabase
+    .from("admin_users")
+    .select("*")
+    .order("created_at", {
+      ascending: false,
+    });
+
+  if (error) {
+    console.error(
+      "Error loading admin users:",
+      error
+    );
+
+    setErrorMessage(
+      "Unable to load admin users."
+    );
+
+    setAdminUsersLoading(false);
+
+    return;
+  }
+
+  setAdminUsers(data || []);
+  setAdminUsersLoading(false);
+}
+
+async function changePassword() {
+  setErrorMessage("");
+  setMessage("");
+
+  if (!passwordForm.password) {
+    setErrorMessage("Please enter a new password.");
+    return;
+  }
+
+  if (passwordForm.password.length < 8) {
+    setErrorMessage(
+      "Password must be at least 8 characters."
+    );
+    return;
+  }
+
+  if (
+    passwordForm.password !==
+    passwordForm.confirmPassword
+  ) {
+    setErrorMessage(
+      "Passwords do not match."
+    );
+    return;
+  }
+
+  setPasswordLoading(true);
+
+  const { error } =
+    await supabase.auth.updateUser({
+      password: passwordForm.password,
+    });
+
+  if (error) {
+    console.error(
+      "Password update error:",
+      error
+    );
+
+    setErrorMessage(
+      error.message ||
+        "Unable to change password."
+    );
+
+    setPasswordLoading(false);
+    return;
+  }
+
+  setPasswordForm({
+    password: "",
+    confirmPassword: "",
+  });
+
+  setPasswordLoading(false);
+
+  setMessage(
+    "Password changed successfully."
+  );
+}
+
+async function createAdminUser() {
+  setErrorMessage("");
+  setMessage("");
+
+  const displayName =
+    userForm.display_name.trim();
+
+  const email =
+    userForm.email.trim().toLowerCase();
+
+  const password =
+    userForm.password;
+
+  if (!displayName) {
+    setErrorMessage(
+      "Please enter a display name."
+    );
+    return;
+  }
+
+  if (!email) {
+    setErrorMessage(
+      "Please enter an email address."
+    );
+    return;
+  }
+
+  if (password.length < 8) {
+    setErrorMessage(
+      "Password must be at least 8 characters."
+    );
+    return;
+  }
+
+  if (
+    !["admin", "manager"].includes(
+      userForm.role
+    )
+  ) {
+    setErrorMessage(
+      "Invalid account role."
+    );
+    return;
+  }
+
+  setUserActionLoading(true);
+
+  const {
+    data,
+    error,
+  } = await supabase.functions.invoke(
+    "admin-user",
+    {
+      body: {
+        action: "create",
+        email,
+        password,
+        display_name: displayName,
+        role: userForm.role,
+      },
+    }
+  );
+
+  if (error) {
+    console.error(
+      "Create admin user error:",
+      error
+    );
+
+    setErrorMessage(
+      error.message ||
+        "Unable to create account."
+    );
+
+    setUserActionLoading(false);
+    return;
+  }
+
+  if (data?.error) {
+    setErrorMessage(data.error);
+    setUserActionLoading(false);
+    return;
+  }
+
+  setUserForm({
+    display_name: "",
+    email: "",
+    password: "",
+    role: "manager",
+  });
+
+  setShowUserForm(false);
+  setUserActionLoading(false);
+
+  await getAdminUsers();
+
+  setMessage(
+    "Account created successfully."
+  );
+}
+
+async function updateAdminUserRole(
+  userId,
+  newRole
+) {
+  setErrorMessage("");
+  setMessage("");
+
+  if (
+    !["admin", "manager"].includes(
+      newRole
+    )
+  ) {
+    setErrorMessage(
+      "Invalid account role."
+    );
+    return;
+  }
+
+  if (userId === session?.user?.id) {
+    setErrorMessage(
+      "You cannot change your own role."
+    );
+    return;
+  }
+
+  setUserActionLoading(true);
+
+  const { error } = await supabase
+    .from("admin_users")
+    .update({
+      role: newRole,
+    })
+    .eq("id", userId);
+
+  if (error) {
+    console.error(
+      "Update admin user role error:",
+      error
+    );
+
+    setErrorMessage(
+      error.message ||
+        "Unable to update account role."
+    );
+
+    setUserActionLoading(false);
+    return;
+  }
+
+  await getAdminUsers();
+
+  setUserActionLoading(false);
+
+  setMessage(
+    "Account role updated successfully."
+  );
+}
+
+async function toggleAdminUserActive(
+  userId,
+  currentActive
+) {
+  setErrorMessage("");
+  setMessage("");
+
+  if (userId === session?.user?.id) {
+    setErrorMessage(
+      "You cannot deactivate your own account."
+    );
+    return;
+  }
+
+  setUserActionLoading(true);
+
+  const { error } = await supabase
+    .from("admin_users")
+    .update({
+      active: !currentActive,
+    })
+    .eq("id", userId);
+
+  if (error) {
+    console.error(
+      "Toggle admin user error:",
+      error
+    );
+
+    setErrorMessage(
+      error.message ||
+        "Unable to update account status."
+    );
+
+    setUserActionLoading(false);
+    return;
+  }
+
+  await getAdminUsers();
+
+  setUserActionLoading(false);
+
+  setMessage(
+    `Account ${
+      currentActive
+        ? "deactivated"
+        : "activated"
+    } successfully.`
+  );
+}
+
+async function deleteAdminUser(userId) {
+  setErrorMessage("");
+  setMessage("");
+
+  if (userId === session?.user?.id) {
+    setErrorMessage(
+      "You cannot delete your own account."
+    );
+    return;
+  }
+
+  const confirmed = window.confirm(
+    "Are you sure you want to permanently delete this account?"
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  setUserActionLoading(true);
+
+  const {
+    data,
+    error,
+  } = await supabase.functions.invoke(
+    "admin-user",
+    {
+      body: {
+        action: "delete",
+        user_id: userId,
+      },
+    }
+  );
+
+  if (error) {
+    console.error(
+      "Delete admin user error:",
+      error
+    );
+
+    setErrorMessage(
+      error.message ||
+        "Unable to delete account."
+    );
+
+    setUserActionLoading(false);
+    return;
+  }
+
+  if (data?.error) {
+    setErrorMessage(data.error);
+    setUserActionLoading(false);
+    return;
+  }
+
+  await getAdminUsers();
+
+  setUserActionLoading(false);
+
+  setMessage(
+    "Account deleted successfully."
+  );
+}
+
+
+
   /* =========================
      GET BOOKINGS
   ========================= */
@@ -285,6 +833,31 @@ function Admin() {
     setBookings(data || []);
     setBookingsLoading(false);
   }
+
+  async function getNotifications() {
+  setNotificationsLoading(true);
+
+  const { data, error } = await supabase
+    .from("admin_notifications")
+    .select("*")
+    .order("created_at", {
+      ascending: false,
+    })
+    .limit(30);
+
+  if (error) {
+    console.error(
+      "Error loading notifications:",
+      error
+    );
+
+    setNotificationsLoading(false);
+    return;
+  }
+
+  setNotifications(data || []);
+  setNotificationsLoading(false);
+}
 
   /* =========================
      GET SPECIAL OFFERS SETTINGS
@@ -349,6 +922,7 @@ function Admin() {
       slug: "",
       sort_order: sections.length + 1,
       active: true,
+      image: "",
     });
 
     setEditingSectionId(null);
@@ -361,10 +935,9 @@ function Admin() {
       name_en: section.name_en || "",
       name_ru: section.name_ru || "",
       slug: section.slug || "",
-      sort_order:
-        section.sort_order ?? 0,
-      active:
-        section.active ?? true,
+      sort_order: section.sort_order ?? 0,
+      active: section.active ?? true,
+      image: section.image || "",
     });
 
     setMessage("");
@@ -378,6 +951,10 @@ function Admin() {
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "");
   }
+
+  /* =========================
+     SAVE SECTION
+  ========================= */
 
   async function saveSection(event) {
     event.preventDefault();
@@ -428,11 +1005,9 @@ function Admin() {
       name_ru: nameRu,
       slug,
       sort_order:
-        Number(
-          sectionForm.sort_order
-        ) || 0,
-      active:
-        sectionForm.active,
+        Number(sectionForm.sort_order) || 0,
+      active: sectionForm.active,
+      image: sectionForm.image || null,
     };
 
     let result;
@@ -488,6 +1063,71 @@ function Admin() {
 
     setSectionSaving(false);
   }
+
+  /* =========================
+     UPLOAD SECTION IMAGE
+  ========================= */
+
+  async function uploadSectionImage(file) {
+    if (!file) {
+      return;
+    }
+
+    setErrorMessage("");
+    setMessage("");
+
+    const fileExtension =
+      file.name.split(".").pop();
+
+    const fileName =
+      `section-${Date.now()}-${Math.random()
+        .toString(36)
+        .substring(2)}.${fileExtension}`;
+
+    const filePath =
+      `sections/${fileName}`;
+
+    const { error } =
+      await supabase.storage
+        .from("trip-images")
+        .upload(
+          filePath,
+          file
+        );
+
+    if (error) {
+      console.error(
+        "Section image upload error:",
+        error
+      );
+
+      setErrorMessage(
+        "There was an error uploading the section image."
+      );
+
+      return;
+    }
+
+    const { data } =
+      supabase.storage
+        .from("trip-images")
+        .getPublicUrl(
+          filePath
+        );
+
+    setSectionForm((previous) => ({
+      ...previous,
+      image: data.publicUrl,
+    }));
+
+    setMessage(
+      "Section image uploaded. Save the section to apply it."
+    );
+  }
+
+  /* =========================
+     DELETE SECTION
+  ========================= */
 
   async function deleteSection(section) {
     const usedTrips =
@@ -558,60 +1198,194 @@ function Admin() {
      UPDATE BOOKING STATUS
   ========================= */
 
-  async function updateBookingStatus(
-    bookingId,
+async function updateBookingStatus(
+  bookingId,
+  newStatus
+) {
+  const currentBooking = bookings.find(
+    (booking) =>
+      booking.id === bookingId
+  );
+
+  if (!currentBooking) {
+    setErrorMessage(
+      "Booking not found."
+    );
+
+    return;
+  }
+
+  if (
+    currentBooking.status ===
     newStatus
   ) {
-    const currentBooking = bookings.find(
-      (booking) =>
-        booking.id === bookingId
+    return;
+  }
+
+  setErrorMessage("");
+  setMessage("");
+
+  /*
+   * 1. Update booking status
+   */
+  const { error } = await supabase
+    .from("bookings")
+    .update({
+      status: newStatus,
+    })
+    .eq("id", bookingId);
+
+  if (error) {
+    console.error(
+      "Update booking status error:",
+      error
     );
 
-    if (
-      currentBooking?.status ===
-      newStatus
-    ) {
-      return;
-    }
-
-    setErrorMessage("");
-    setMessage("");
-
-    const { error } = await supabase
-      .from("bookings")
-      .update({
-        status: newStatus,
-      })
-      .eq("id", bookingId);
-
-    if (error) {
-      console.error(
-        "Update booking status error:",
-        error
-      );
-
-      setErrorMessage(
+    setErrorMessage(
+      error.message ||
         "Unable to update booking status."
-      );
-
-      return;
-    }
-
-    setBookings((previous) =>
-      previous.map((booking) =>
-        booking.id === bookingId
-          ? {
-              ...booking,
-              status: newStatus,
-            }
-          : booking
-      )
     );
 
+    return;
+  }
+
+  /*
+   * 2. Update booking in the dashboard
+   */
+  setBookings((previous) =>
+    previous.map((booking) =>
+      booking.id === bookingId
+        ? {
+            ...booking,
+            status: newStatus,
+          }
+        : booking
+    )
+  );
+
+  /*
+   * 3. Pending does not send an email
+   */
+  if (
+    newStatus !== "confirmed" &&
+    newStatus !== "cancelled"
+  ) {
     setMessage(
       "Booking status updated successfully!"
     );
+
+    return;
   }
+
+  /*
+   * 4. Confirm / Cancel
+   * Send customer email through Edge Function
+   */
+
+  if (!currentBooking.email) {
+  setErrorMessage(
+    "Booking updated, but this customer has no email address."
+  );
+
+  return;
+}
+
+setErrorMessage("");
+
+setMessage(
+  newStatus === "confirmed"
+    ? "Booking confirmed. Sending confirmation email..."
+    : "Booking cancelled. Sending notification email..."
+);
+
+const {
+  data,
+  error: emailError,
+} = await supabase.functions.invoke(
+  "booking-email",
+  {
+    body: {
+      bookingId,
+      status: newStatus,
+    },
+  }
+);
+
+if (emailError) {
+  console.error(
+    "Booking email error:",
+    emailError
+  );
+
+  setMessage("");
+
+  setErrorMessage(
+    "Booking status updated, but the customer email could not be sent."
+  );
+
+  return;
+}
+
+if (data?.error) {
+  console.error(
+    "Booking email service error:",
+    data.error
+  );
+
+  setMessage("");
+
+  setErrorMessage(
+    `Booking updated, but email failed: ${data.error}`
+  );
+
+  return;
+}
+
+setErrorMessage("");
+
+setMessage(
+  newStatus === "confirmed"
+    ? "Booking confirmed and confirmation email sent successfully!"
+    : "Booking cancelled and customer email sent successfully!"
+);
+}
+  /* =========================
+     DELETE BOOKING 
+  ========================= */
+
+  async function deleteBooking(booking) {
+  setErrorMessage("");
+  setMessage("");
+
+  const { error } = await supabase
+    .from("bookings")
+    .delete()
+    .eq("id", booking.id);
+
+  if (error) {
+    console.error(
+      "Error deleting booking:",
+      error
+    );
+
+    setErrorMessage(
+      error.message ||
+        "Unable to delete this booking."
+    );
+
+    return;
+  }
+
+  setBookings((previous) =>
+    previous.filter(
+      (item) => item.id !== booking.id
+    )
+  );
+
+  setMessage(
+    "Booking deleted successfully."
+  );
+}
 
   /* =========================
      FORM HELPERS
@@ -901,7 +1675,7 @@ function Admin() {
 
       title_ru:
         specialOffersSettings.title_ru.trim() ||
-        "СПЕЦИАЛЬНЫЕ ПРЕДЛОحات",
+        "СПЕЦИАЛЬНЫЕ ПРЕДЛОЖЕНИЯ",
 
       description_en:
         specialOffersSettings.description_en?.trim() ||
@@ -1749,26 +2523,27 @@ function Admin() {
      AUTH LOADING
   ========================= */
 
-  if (authLoading) {
-    return (
-      <div className="admin-page">
-        <div className="admin-content">
-          <p>
-            Checking authentication...
-          </p>
-        </div>
+  
+if (authLoading || adminLoading) {
+  return (
+    <div className="admin-page">
+      <div className="admin-content">
+        <p>
+          Checking access...
+        </p>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
-  if (!session) {
-    return (
-      <Navigate
-        to="/admin/login"
-        replace
-      />
-    );
-  }
+if (!session || !isStaff) {
+  return (
+    <Navigate
+      to="/admin/login"
+      replace
+    />
+  );
+}
 
   return (
     <div className="admin-page">
@@ -1792,64 +2567,133 @@ function Admin() {
         </div>
 
         <nav className="admin-menu">
+          
+  <button
+    type="button"
+    className={`admin-menu-item ${
+      openSection === "dashboard" ? "active" : ""
+    }`}
+    onClick={() => setOpenSection("dashboard")}
+  >
+    Dashboard
+  </button>
 
-          <a href="#dashboard">
-            Dashboard
-          </a>
+  <button
+    type="button"
+    className={`admin-menu-item ${
+      openSection === "account-management" ? "active" : ""
+    }`}
+    onClick={() =>
+      setOpenSection("account-management")
+    }
+  >
+    Account Management
+  </button>
 
-          <a href="#sections">
-            Sections
-          </a>
+  <button
+    type="button"
+    className={`admin-menu-item ${
+      openSection === "sections" ? "active" : ""
+    }`}
+    onClick={() => setOpenSection("sections")}
+  >
+    Trip Sections
+  </button>
 
-          <a href="#special-offers">
-            Special Offers
-          </a>
+  <button
+    type="button"
+    className={`admin-menu-item ${
+      openSection === "special-offers" ? "active" : ""
+    }`}
+    onClick={() =>
+      setOpenSection("special-offers")
+    }
+  >
+    Special Offers
+  </button>
 
-          <a href="#trips">
-            Trips
-          </a>
+  <button
+    type="button"
+    className={`admin-menu-item ${
+      openSection === "trips" ? "active" : ""
+    }`}
+    onClick={() => setOpenSection("trips")}
+  >
+    Trips
+  </button>
 
-          <a href="#add-trip">
-            Add Trip
-          </a>
+  <button
+    type="button"
+    className={`admin-menu-item ${
+      openSection === "add-trip" ? "active" : ""
+    }`}
+    onClick={() => setOpenSection("add-trip")}
+  >
+    Add Trip
+  </button>
 
-          <a href="#bookings">
-            Bookings
+  <button
+    type="button"
+    className={`admin-menu-item ${
+      openSection === "bookings" ? "active" : ""
+    }`}
+    onClick={() => setOpenSection("bookings")}
+  >
+    <span>Bookings</span>
 
-            {pendingBookings >
-              0 && (
-              <span className="menu-badge">
-                {
-                  pendingBookings
-                }
-              </span>
-            )}
-
-          </a>
-
-        </nav>
+    {pendingBookings > 0 && (
+      <span className="menu-badge">
+        {pendingBookings}
+      </span>
+    )}
+  </button>
+</nav>
 
         <div className="sidebar-footer">
 
-          <span>
-            AVORA Travel
+           <span>
+             AVORA Travel
           </span>
 
-          <small>
-            Management System
-          </small>
+        <small>
+           Management System
+       </small>
 
-          <button
-            type="button"
-            className="logout-button"
-            onClick={
-              handleLogout
-            }
-          >
-            Logout
-          </button>
+       <div
+         style={{
+          marginTop: "12px",
+      marginBottom: "12px",
+      padding: "8px 12px",
+      borderRadius: "8px",
+      background:
+        "rgba(255, 255, 255, 0.08)",
+      fontSize: "12px",
+      fontWeight: "700",
+      textTransform: "uppercase",
+      letterSpacing: "1px",
+      textAlign: "center",
+    }}
+  >
+    {isAdmin ? "Admin" : "Manager"}
+  </div>
 
-        </div>
+             <button
+              type="button"
+             className="logout-button"
+              onClick={() => navigate("/")}
+              >
+            ← Back to Website
+             </button>
+
+             <button
+                      type="button"
+                  className="logout-button"
+                   onClick={handleLogout}
+                  >
+                  Logout
+             </button>
+
+          </div>
 
       </aside>
 
@@ -1906,11 +2750,613 @@ function Admin() {
             STATS
         ========================= */}
 
-        <section
-          className="stats-grid"
-          id="dashboard"
-        >
 
+
+   {openSection === "dashboard" && (
+  <section
+    id="dashboard"
+    className="admin-section"
+  >
+
+    <section>
+      <div className="dashboard-topbar">
+
+  <div>
+    <h2>Dashboard</h2>
+    <p>Overview of your travel business</p>
+  </div>
+
+  <div className="admin-notification-area">
+
+    <button
+      type="button"
+      className="notification-button"
+      onClick={() =>
+        setNotifications((previous) =>
+          previous.map((item) => ({
+            ...item,
+            read: true,
+          }))
+        )
+      }
+    >
+      🔔
+
+      {notifications.filter(
+        (item) => !item.read
+      ).length > 0 && (
+        <span className="notification-count">
+          {
+            notifications.filter(
+              (item) => !item.read
+            ).length
+          }
+        </span>
+      )}
+    </button>
+
+    <div className="notification-dropdown">
+
+      <div className="notification-header">
+        <strong>
+          Notifications
+        </strong>
+
+        <span>
+          {
+            notifications.filter(
+              (item) => !item.read
+            ).length
+          }{" "}
+          new
+        </span>
+      </div>
+
+      {notificationsLoading ? (
+        <p className="notification-empty">
+          Loading...
+        </p>
+      ) : notifications.length === 0 ? (
+        <p className="notification-empty">
+          No notifications
+        </p>
+      ) : (
+        notifications.map(
+          (notification) => (
+            <div
+              key={notification.id}
+              className={
+                notification.read
+                  ? "notification-item"
+                  : "notification-item unread"
+              }
+            >
+              <strong>
+                {notification.title}
+              </strong>
+
+              <p>
+                {notification.message}
+              </p>
+
+              <small>
+                {formatDateTime(
+                  notification.created_at
+                )}
+              </small>
+            </div>
+          )
+        )
+      )}
+
+    </div>
+
+  </div>
+
+</div>
+</section>
+</section>
+   )}
+
+{openSection === "account-management" && (
+  <section
+    id="account-management"
+    className="admin-section account-management-section"
+  >
+    {/* =====================================================
+        ACCOUNT MANAGEMENT HEADER
+        ===================================================== */}
+
+    <div className="account-page-header">
+      <div className="account-page-title">
+        <span className="account-page-eyebrow">
+          AVORA ADMIN
+        </span>
+
+        <h2>Account Management</h2>
+
+        <p>
+          Manage administrator and manager access to your AVORA dashboard.
+        </p>
+      </div>
+
+      {isAdmin && (
+        <button
+          type="button"
+          className="account-add-button"
+          onClick={() =>
+            setShowUserForm(!showUserForm)
+          }
+        >
+          <span className="account-add-icon">
+            +
+          </span>
+
+          <span>
+            {showUserForm
+              ? "Close Form"
+              : "Add Account"}
+          </span>
+        </button>
+      )}
+    </div>
+
+    {/* =====================================================
+        ADD ACCOUNT
+        ===================================================== */}
+
+    {isAdmin && showUserForm && (
+      <div className="account-create-card">
+        <div className="account-card-header">
+          <div>
+            <span className="account-card-eyebrow">
+              NEW ACCOUNT
+            </span>
+
+            <h3>Create Account</h3>
+
+            <p>
+              Add a new administrator or manager to AVORA.
+            </p>
+          </div>
+        </div>
+
+        <div className="account-form-grid">
+          <div className="account-form-group">
+            <label htmlFor="user-display-name">
+              Display Name
+            </label>
+
+            <input
+              id="user-display-name"
+              type="text"
+              value={userForm.display_name}
+              onChange={(event) =>
+                setUserForm((previous) => ({
+                  ...previous,
+                  display_name:
+                    event.target.value,
+                }))
+              }
+              placeholder="e.g. Michael Samy"
+              disabled={userActionLoading}
+            />
+          </div>
+
+          <div className="account-form-group">
+            <label htmlFor="user-email">
+              Email Address
+            </label>
+
+            <input
+              id="user-email"
+              type="email"
+              value={userForm.email}
+              onChange={(event) =>
+                setUserForm((previous) => ({
+                  ...previous,
+                  email: event.target.value,
+                }))
+              }
+              placeholder="name@example.com"
+              disabled={userActionLoading}
+            />
+          </div>
+
+          <div className="account-form-group">
+            <label htmlFor="user-password">
+              Temporary Password
+            </label>
+
+            <input
+              id="user-password"
+              type="password"
+              value={userForm.password}
+              onChange={(event) =>
+                setUserForm((previous) => ({
+                  ...previous,
+                  password:
+                    event.target.value,
+                }))
+              }
+              placeholder="Minimum 8 characters"
+              disabled={userActionLoading}
+            />
+
+            <small>
+              The account holder can change this password later.
+            </small>
+          </div>
+
+          <div className="account-form-group">
+            <label htmlFor="user-role">
+              Account Role
+            </label>
+
+            <select
+              id="user-role"
+              value={userForm.role}
+              onChange={(event) =>
+                setUserForm((previous) => ({
+                  ...previous,
+                  role: event.target.value,
+                }))
+              }
+              disabled={userActionLoading}
+            >
+              <option value="manager">
+                Manager
+              </option>
+
+              <option value="admin">
+                Admin
+              </option>
+            </select>
+
+            <small>
+              Admins have full dashboard access.
+            </small>
+          </div>
+        </div>
+
+        <div className="account-form-actions">
+          <button
+            type="button"
+            className="account-primary-button"
+            onClick={createAdminUser}
+            disabled={userActionLoading}
+          >
+            {userActionLoading
+              ? "Creating Account..."
+              : "Create Account"}
+          </button>
+
+          <button
+            type="button"
+            className="account-secondary-button"
+            onClick={() => {
+              setShowUserForm(false);
+
+              setUserForm({
+                display_name: "",
+                email: "",
+                password: "",
+                role: "manager",
+              });
+            }}
+            disabled={userActionLoading}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    )}
+
+    {/* =====================================================
+        USERS
+        ===================================================== */}
+
+    <div className="account-users-card">
+      <div className="account-card-header users-header">
+        <div>
+          <span className="account-card-eyebrow">
+            TEAM ACCESS
+          </span>
+
+          <h3>Users</h3>
+
+          <p>
+            Manage existing AVORA administrator accounts and permissions.
+          </p>
+        </div>
+
+        <div className="account-users-count">
+          <strong>
+            {adminUsers.length}
+          </strong>
+
+          <span>
+            {adminUsers.length === 1
+              ? "Account"
+              : "Accounts"}
+          </span>
+        </div>
+      </div>
+
+      {adminUsersLoading ? (
+        <div className="account-loading-state">
+          <div className="account-loading-dot" />
+          <span>Loading accounts...</span>
+        </div>
+      ) : adminUsers.length === 0 ? (
+        <div className="account-empty-state">
+          <strong>No accounts found</strong>
+
+          <span>
+            Create the first AVORA administrator account.
+          </span>
+        </div>
+      ) : (
+        <div className="account-users-table">
+          <div className="account-table-head">
+            <span>User</span>
+            <span>Role</span>
+            <span>Status</span>
+            <span>Actions</span>
+          </div>
+
+          <div className="account-table-body">
+            {adminUsers.map((user) => {
+              const isCurrentUser =
+                user.id === session?.user?.id;
+
+              return (
+                <div
+                  className={`account-user-row ${
+                    isCurrentUser
+                      ? "current-user"
+                      : ""
+                  }`}
+                  key={user.id}
+                >
+                  {/* USER */}
+
+                  <div className="account-user-cell account-user-main">
+                    <div className="account-user-avatar">
+                      {(
+                        user.display_name ||
+                        user.email ||
+                        "A"
+                      )
+                        .charAt(0)
+                        .toUpperCase()}
+                    </div>
+
+                    <div className="account-user-details">
+                      <strong>
+                        {user.display_name ||
+                          "AVORA User"}
+                      </strong>
+
+                      <span>
+                        {user.email ||
+                          "No email available"}
+                      </span>
+
+                      {isCurrentUser && (
+                        <small>
+                          Current account
+                        </small>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* ROLE */}
+
+                  <div className="account-user-cell">
+                    {isAdmin && !isCurrentUser ? (
+                      <select
+                        className="account-role-select"
+                        value={
+                          user.role ||
+                          "manager"
+                        }
+                        onChange={(event) =>
+                          updateAdminUserRole(
+                            user.id,
+                            event.target.value
+                          )
+                        }
+                        disabled={
+                          userActionLoading
+                        }
+                      >
+                        <option value="manager">
+                          Manager
+                        </option>
+
+                        <option value="admin">
+                          Admin
+                        </option>
+                      </select>
+                    ) : (
+                      <span
+                        className={`account-role-badge ${
+                          user.role ===
+                          "admin"
+                            ? "admin"
+                            : "manager"
+                        }`}
+                      >
+                        {user.role ===
+                        "admin"
+                          ? "Admin"
+                          : "Manager"}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* STATUS */}
+
+                  <div className="account-user-cell">
+                    <span
+                      className={`account-status-badge ${
+                        user.active
+                          ? "active"
+                          : "inactive"
+                      }`}
+                    >
+                      <span className="account-status-dot" />
+
+                      {user.active
+                        ? "Active"
+                        : "Inactive"}
+                    </span>
+                  </div>
+
+                  {/* ACTIONS */}
+
+                  <div className="account-user-cell account-user-actions">
+                    {isAdmin &&
+                    !isCurrentUser ? (
+                      <>
+                        <button
+                          type="button"
+                          className="account-action-button secondary"
+                          onClick={() =>
+                            toggleAdminUserActive(
+                              user.id,
+                              user.active
+                            )
+                          }
+                          disabled={
+                            userActionLoading
+                          }
+                        >
+                          {user.active
+                            ? "Deactivate"
+                            : "Activate"}
+                        </button>
+
+                        <button
+                          type="button"
+                          className="account-action-button danger"
+                          onClick={() =>
+                            deleteAdminUser(
+                              user.id
+                            )
+                          }
+                          disabled={
+                            userActionLoading
+                          }
+                        >
+                          Delete
+                        </button>
+                      </>
+                    ) : (
+                      <span className="account-protected-label">
+                        {isCurrentUser
+                          ? "Your account"
+                          : "Protected"}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+
+    {/* =====================================================
+        CHANGE PASSWORD
+        ===================================================== */}
+
+    <div className="account-password-card">
+      <div className="account-password-icon">
+        🔐
+      </div>
+
+      <div className="account-password-content">
+        <span className="account-card-eyebrow">
+          SECURITY
+        </span>
+
+        <h3>Change Password</h3>
+
+        <p>
+          Update the password for your current AVORA account.
+        </p>
+
+        <div className="account-form-grid password-grid">
+          <div className="account-form-group">
+            <label htmlFor="new-password">
+              New Password
+            </label>
+
+            <input
+              id="new-password"
+              type="password"
+              value={passwordForm.password}
+              onChange={(event) =>
+                setPasswordForm((previous) => ({
+                  ...previous,
+                  password:
+                    event.target.value,
+                }))
+              }
+              placeholder="Minimum 8 characters"
+              disabled={passwordLoading}
+            />
+          </div>
+
+          <div className="account-form-group">
+            <label htmlFor="confirm-password">
+              Confirm New Password
+            </label>
+
+            <input
+              id="confirm-password"
+              type="password"
+              value={
+                passwordForm.confirmPassword
+              }
+              onChange={(event) =>
+                setPasswordForm((previous) => ({
+                  ...previous,
+                  confirmPassword:
+                    event.target.value,
+                }))
+              }
+              placeholder="Repeat your new password"
+              disabled={passwordLoading}
+            />
+          </div>
+        </div>
+
+        <div className="account-form-actions">
+          <button
+            type="button"
+            className="account-primary-button"
+            onClick={changePassword}
+            disabled={passwordLoading}
+          >
+            {passwordLoading
+              ? "Updating Password..."
+              : "Change Password"}
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+)}
+{openSection === "dashboard" && (
+ <section
+   id="dashboard"
+    className="admin-section"
+  >
+    <section className="stats-grid">
           <div className="stat-card">
             <span>
               Total Trips
@@ -2016,6 +3462,9 @@ function Admin() {
           </div>
 
         </section>
+        </section>
+
+            )}
 
         {/* =========================
             MESSAGES
@@ -2037,6 +3486,7 @@ function Admin() {
             SECTIONS
         ========================= */}
 
+        {openSection === "sections" && (
         <section
           className="admin-panel"
           id="sections"
@@ -2100,9 +3550,7 @@ function Admin() {
             </div>
 
             <form
-              onSubmit={
-                saveSection
-              }
+              onSubmit={saveSection}
             >
 
               <div className="form-grid">
@@ -2209,6 +3657,82 @@ function Admin() {
                   />
 
                 </div>
+
+              </div>
+
+              {/* SECTION IMAGE */}
+
+              <div className="form-section">
+
+                <h3>
+                  Section Image
+                </h3>
+
+                <div className="upload-box">
+
+                  <input
+                    id="section-image"
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) =>
+                      uploadSectionImage(
+                        e.target.files?.[0]
+                      )
+                    }
+                  />
+
+                  <label htmlFor="section-image">
+
+                    <span className="upload-icon">
+                      +
+                    </span>
+
+                    <strong>
+                      Upload Section Image
+                    </strong>
+
+                    <small>
+                      Choose one image for this website section
+                    </small>
+
+                  </label>
+
+                </div>
+
+                {sectionForm.image && (
+                  <div
+                    style={{
+                      marginTop:
+                        "20px",
+                      maxWidth:
+                        "500px",
+                    }}
+                  >
+
+                    <img
+                      src={
+                        sectionForm.image
+                      }
+                      alt={
+                        sectionForm.name_en ||
+                        "Section"
+                      }
+                      style={{
+                        width:
+                          "100%",
+                        height:
+                          "220px",
+                        objectFit:
+                          "cover",
+                        borderRadius:
+                          "12px",
+                        display:
+                          "block",
+                      }}
+                    />
+
+                  </div>
+                )}
 
               </div>
 
@@ -2353,36 +3877,47 @@ function Admin() {
                           className="admin-trip-image"
                           style={{
                             minHeight:
-                              "120px",
+                              "180px",
                           }}
                         >
 
-                          <div
-                            style={{
-                              width:
-                                "100%",
-                              height:
-                                "100%",
-                              minHeight:
-                                "120px",
-                              display:
-                                "flex",
-                              alignItems:
-                                "center",
-                              justifyContent:
-                                "center",
-                              fontSize:
-                                "30px",
-                              fontWeight:
-                                "700",
-                            }}
-                          >
-                            {section.name_en
-                              .charAt(
-                                0
-                              )
-                              .toUpperCase()}
-                          </div>
+                          {section.image ? (
+                            <img
+                              src={
+                                section.image
+                              }
+                              alt={
+                                section.name_en
+                              }
+                            />
+                          ) : (
+                            <div
+                              style={{
+                                width:
+                                  "100%",
+                                height:
+                                  "100%",
+                                minHeight:
+                                  "180px",
+                                display:
+                                  "flex",
+                                alignItems:
+                                  "center",
+                                justifyContent:
+                                  "center",
+                                fontSize:
+                                  "30px",
+                                fontWeight:
+                                  "700",
+                              }}
+                            >
+                              {section.name_en
+                                .charAt(
+                                  0
+                                )
+                                .toUpperCase()}
+                            </div>
+                          )}
 
                           <span className="featured-badge">
                             {section.active
@@ -2445,17 +3980,17 @@ function Admin() {
                               Edit
                             </button>
 
-                            <button
-                              type="button"
-                              className="delete-button"
-                              onClick={() =>
-                                deleteSection(
-                                  section
-                                )
-                              }
-                            >
-                              Delete
-                            </button>
+                            {isAdmin && (
+  <button
+    type="button"
+    className="delete-button"
+    onClick={() =>
+      deleteSection(section)
+    }
+  >
+    Delete
+  </button>
+)}
 
                           </div>
 
@@ -2473,11 +4008,13 @@ function Admin() {
           </div>
 
         </section>
+        )}
 
         {/* =========================
             SPECIAL OFFERS
         ========================= */}
 
+        {openSection === "special-offers" && (
         <section
           className="admin-panel"
           id="special-offers"
@@ -3018,11 +4555,13 @@ function Admin() {
           </div>
 
         </section>
+        )}
+
 
         {/* =========================
             ADD / EDIT TRIP
         ========================= */}
-
+        {openSection === "add-trip" && (
         <section
           className="admin-panel"
           id="add-trip"
@@ -3119,8 +4658,6 @@ function Admin() {
                   />
 
                 </div>
-
-                {/* NEW SECTION SELECT */}
 
                 <div className="form-group">
 
@@ -3715,11 +5252,12 @@ function Admin() {
           </form>
 
         </section>
+        )}
 
         {/* =========================
             ALL TRIPS
         ========================= */}
-
+        {openSection === "trips" && (
         <section
           className="admin-panel"
           id="trips"
@@ -4117,17 +5655,17 @@ function Admin() {
                         </button>
                       )}
 
-                      <button
-                        type="button"
-                        className="delete-button"
-                        onClick={() =>
-                          deleteTrip(
-                            trip
-                          )
-                        }
-                      >
-                        Delete
-                      </button>
+                      {isAdmin && (
+                       <button
+                         type="button"
+                         className="delete-button"
+                         onClick={() =>
+                         deleteTrip(trip)
+                         }
+                       >
+                          Delete
+                       </button>
+                          )}
 
                     </div>
 
@@ -4159,14 +5697,16 @@ function Admin() {
           )}
 
         </section>
+        )}
 
         {/* =========================
             BOOKINGS
         ========================= */}
 
-        <section
-          className="admin-panel bookings-panel"
+        {openSection === "bookings" && (
+       <section
           id="bookings"
+          className="admin-section"
         >
 
           <div className="panel-heading">
@@ -4606,21 +6146,20 @@ function Admin() {
                         </button>
 
                         <button
-                          type="button"
-                          className="booking-status-button confirmed"
-                          disabled={
-                            booking.status ===
-                            "confirmed"
-                          }
-                          onClick={() =>
-                            updateBookingStatus(
-                              booking.id,
-                              "confirmed"
-                            )
-                          }
-                        >
-                          Confirm
-                        </button>
+  type="button"
+  className="booking-status-button confirmed"
+  disabled={booking.status === "confirmed"}
+  onClick={() => {
+    console.log("CONFIRM BUTTON CLICKED", booking.id);
+
+    updateBookingStatus(
+      booking.id,
+      "confirmed"
+    );
+  }}
+>
+  Confirm
+</button>
 
                         <button
                           type="button"
@@ -4639,6 +6178,18 @@ function Admin() {
                           Cancel
                         </button>
 
+                        {isAdmin && (
+                        <button
+                           type="button"
+                           className="booking-delete-button"
+                           onClick={() =>
+                           deleteBooking(booking)
+                           }
+                           >
+                           Delete Booking
+                         </button>
+                        )}
+
                       </div>
 
                     </div>
@@ -4652,14 +6203,15 @@ function Admin() {
 
           )}
 
-        </section>
+       </section>
+        )}
 
       </div>
-
     </div>
   );
 }
-
+    
+  
 /* =========================
    LIST EDITOR
 ========================= */
@@ -4788,5 +6340,4 @@ function ListEditor({
     </div>
   );
 }
-
 export default Admin;
