@@ -649,7 +649,7 @@ function App() {
         <div className="about-image">
 
        <img
-         src="/avora-travel/images/hero.jpg"
+        src="/images/about.jpg"
           alt={t.travelAlt}
        />
 
